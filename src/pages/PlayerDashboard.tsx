@@ -1,45 +1,110 @@
 
-import React from 'react';
-import { Plus, Calendar, Trophy, CreditCard, Users, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { EmptyState } from '@/components/ui/empty-state';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 const PlayerDashboard = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = React.useState('dashboard');
-  
-  // Mock data
-  const playerData = {
-    name: 'Carlos Martínez',
-    responsabilityScore: 85,
-    upcomingMatches: [
-      {
-        id: 1,
-        teamName: 'Los Tigres',
-        date: '2024-01-15',
-        time: '19:00',
-        field: 'Cancha Central',
-        confirmed: true
-      },
-      {
-        id: 2,
-        teamName: 'Amigos FC',
-        date: '2024-01-18',
-        time: '20:30',
-        field: 'La Bombonera',
-        confirmed: false
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [teams, setTeams] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [score, setScore] = useState(null);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate('/login');
+        return;
       }
-    ],
-    teams: [
-      {
-        id: 1,
-        name: 'Los Tigres',
-        type: '11 vs 11',
-        members: 18,
-        isOwner: true
+
+      setUser(session.user);
+
+      // Get user profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (profileData?.role !== 'player') {
+        navigate('/admin/dashboard');
+        return;
       }
-    ],
-    pendingPayments: 2
+
+      setProfile(profileData);
+
+      // Load user data
+      await Promise.all([
+        loadUserTeams(session.user.id),
+        loadUserMatches(session.user.id),
+        loadUserScore(session.user.id)
+      ]);
+
+    } catch (error) {
+      console.error('Auth error:', error);
+      navigate('/login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadUserTeams = async (userId: string) => {
+    const { data } = await supabase
+      .from('teams')
+      .select(`
+        *,
+        team_members!inner(*)
+      `)
+      .eq('team_members.user_id', userId);
+    
+    if (data) setTeams(data);
+  };
+
+  const loadUserMatches = async (userId: string) => {
+    const { data } = await supabase
+      .from('matches')
+      .select(`
+        *,
+        teams(name),
+        fields(name, location),
+        attendance!inner(status)
+      `)
+      .eq('attendance.user_id', userId)
+      .gte('date_time', new Date().toISOString())
+      .order('date_time', { ascending: true })
+      .limit(5);
+    
+    if (data) setMatches(data);
+  };
+
+  const loadUserScore = async (userId: string) => {
+    const { data } = await supabase
+      .from('scores')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+    
+    if (data) setScore(data);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
   };
 
   const handleCreateTeam = () => {
@@ -62,7 +127,7 @@ const PlayerDashboard = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-foreground">Partidex</h1>
-                <p className="text-sm text-muted-foreground">¡Hola, {playerData.name}!</p>
+                <p className="text-sm text-muted-foreground">¡Hola, {profile?.name || 'Jugador'}!</p>
               </div>
             </div>
             
@@ -84,6 +149,15 @@ const PlayerDashboard = () => {
               >
                 Equipo
               </GlassmorphismButton>
+
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
+                icon={LogOut}
+                onClick={handleLogout}
+              >
+                Salir
+              </GlassmorphismButton>
             </div>
           </div>
         </div>
@@ -102,7 +176,7 @@ const PlayerDashboard = () => {
                   <Trophy className="w-5 h-5 text-gold-premium" />
                 </div>
                 <div className="flex justify-center">
-                  <ScoreRing score={playerData.responsabilityScore} size="md" />
+                  <ScoreRing score={score?.score || 100} size="md" />
                 </div>
               </div>
 
@@ -111,15 +185,15 @@ const PlayerDashboard = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Equipos</span>
-                    <span className="text-2xl font-bold text-green-dynamic">{playerData.teams.length}</span>
+                    <span className="text-2xl font-bold text-green-dynamic">{teams.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Próximos partidos</span>
-                    <span className="text-2xl font-bold text-gold-premium">{playerData.upcomingMatches.length}</span>
+                    <span className="text-2xl font-bold text-gold-premium">{matches.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Pagos pendientes</span>
-                    <span className="text-2xl font-bold text-intense-red">{playerData.pendingPayments}</span>
+                    <span className="text-2xl font-bold text-intense-red">0</span>
                   </div>
                 </div>
               </div>
@@ -165,9 +239,9 @@ const PlayerDashboard = () => {
                 <Calendar className="w-6 h-6 text-gold-premium" />
               </div>
 
-              {playerData.upcomingMatches.length > 0 ? (
+              {matches.length > 0 ? (
                 <div className="space-y-4">
-                  {playerData.upcomingMatches.map((match, index) => (
+                  {matches.map((match: any, index) => (
                     <div key={match.id} className={`p-4 rounded-2xl border transition-all hover-lift ${
                       match.confirmed 
                         ? 'border-green-dynamic/30 bg-green-dynamic/5' 
@@ -224,9 +298,9 @@ const PlayerDashboard = () => {
                 <Users className="w-6 h-6 text-gold-premium" />
               </div>
 
-              {playerData.teams.length > 0 ? (
+              {teams.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {playerData.teams.map((team) => (
+                  {teams.map((team: any) => (
                     <div key={team.id} className="p-4 rounded-2xl border border-border hover-lift transition-all cursor-pointer">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-foreground">{team.name}</h3>

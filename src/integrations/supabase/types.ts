@@ -14,13 +14,276 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attendance: {
+        Row: {
+          attended: boolean | null
+          id: string
+          match_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          attended?: boolean | null
+          id?: string
+          match_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          attended?: boolean | null
+          id?: string
+          match_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fields: {
+        Row: {
+          admin_id: string
+          created_at: string
+          id: string
+          location: string
+          name: string
+          photo_url: string | null
+          price: number
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          id?: string
+          location: string
+          name: string
+          photo_url?: string | null
+          price: number
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          id?: string
+          location?: string
+          name?: string
+          photo_url?: string | null
+          price?: number
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          created_at: string
+          created_by: string
+          date_time: string
+          field_id: string
+          id: string
+          status: string
+          team_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          date_time: string
+          field_id: string
+          id?: string
+          status?: string
+          team_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          date_time?: string
+          field_id?: string
+          id?: string
+          status?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          match_id: string
+          method: string
+          paid_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          match_id: string
+          method: string
+          paid_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          match_id?: string
+          method?: string
+          paid_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          name: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scores: {
+        Row: {
+          attended: number
+          paid: number
+          score: number
+          total_games: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attended?: number
+          paid?: number
+          score?: number
+          total_games?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attended?: number
+          paid?: number
+          score?: number
+          total_games?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          id: string
+          is_sub: boolean
+          status: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_sub?: boolean
+          status?: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_sub?: boolean
+          status?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

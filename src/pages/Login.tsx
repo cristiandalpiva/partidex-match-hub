@@ -1,31 +1,107 @@
 
-import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { AuthLayout } from '@/components/ui/auth-layout';
 import { RoleSelector } from '@/components/ui/role-selector';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedRole, setSelectedRole] = useState<'player' | 'admin' | null>(null);
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Auth attempt:', { ...formData, role: selectedRole, isLogin });
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (profile?.role === 'player') {
+          navigate('/player/dashboard');
+        } else if (profile?.role === 'admin') {
+          navigate('/admin/dashboard');
+        }
+      }
+    };
     
-    // Mock authentication - redirect based on role
-    if (selectedRole === 'player') {
-      navigate('/player/dashboard');
-    } else if (selectedRole === 'admin') {
-      navigate('/admin/dashboard');
+    checkAuth();
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedRole) return;
+    
+    setLoading(true);
+    
+    try {
+      if (isLogin) {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (error) throw error;
+
+        if (data.user) {
+          // Get user profile to check role
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('user_id', data.user.id)
+            .single();
+
+          if (profile?.role === 'player') {
+            navigate('/player/dashboard');
+          } else if (profile?.role === 'admin') {
+            navigate('/admin/dashboard');
+          }
+        }
+      } else {
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              name: formData.name,
+              role: selectedRole
+            },
+            emailRedirectTo: `${window.location.origin}/`
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.user) {
+          toast({
+            title: "Cuenta creada exitosamente",
+            description: "Revisa tu email para confirmar tu cuenta",
+          });
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error de autenticación",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,7 +140,7 @@ const Login = () => {
                 className="w-full px-4 py-3 pl-12 bg-background/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-premium/50 transition-colors"
                 required={!isLogin}
               />
-              <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             </div>
           </div>
         )}

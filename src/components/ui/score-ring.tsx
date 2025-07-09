@@ -5,14 +5,22 @@ interface ScoreRingProps {
   score: number;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
+  className?: string;
 }
 
-export const ScoreRing = ({ score, size = 'md', showLabel = true }: ScoreRingProps) => {
+export const ScoreRing = ({ score, size = 'md', showLabel = true, className = '' }: ScoreRingProps) => {
   const getScoreColor = (score: number) => {
-    if (score >= 90) return '#FFD700'; // Gold
-    if (score >= 70) return '#00C851'; // Green
-    if (score >= 50) return '#FF6F00'; // Orange
-    return '#FF1744'; // Red
+    if (score >= 90) return 'text-gold-premium';
+    if (score >= 70) return 'text-neon-green';
+    if (score >= 50) return 'text-vibrant-orange';
+    return 'text-intense-red';
+  };
+
+  const getScoreGradient = (score: number) => {
+    if (score >= 90) return 'from-gold-premium to-gold-premium-light';
+    if (score >= 70) return 'from-neon-green to-green-dynamic';
+    if (score >= 50) return 'from-vibrant-orange to-yellow-400';
+    return 'from-intense-red to-red-400';
   };
 
   const getScoreLabel = (score: number) => {
@@ -40,22 +48,23 @@ export const ScoreRing = ({ score, size = 'md', showLabel = true }: ScoreRingPro
     lg: 'text-base'
   };
 
-  const scoreColor = getScoreColor(score);
-  const circumference = 2 * Math.PI * 40; // radius = 40
+  const radius = size === 'sm' ? 30 : size === 'md' ? 40 : 50;
+  const strokeWidth = size === 'sm' ? 4 : size === 'md' ? 6 : 8;
+  const circumference = 2 * Math.PI * radius;
   const strokeDasharray = circumference;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className={`relative ${sizeClasses[size]} flex items-center justify-center`}>
+    <div className={`flex flex-col items-center gap-2 ${className}`}>
+      <div className={`relative ${sizeClasses[size]} flex items-center justify-center group hover-lift`}>
         {/* Background Circle */}
         <svg className="absolute inset-0 w-full h-full transform -rotate-90">
           <circle
             cx="50%"
             cy="50%"
-            r="40"
+            r={radius}
             stroke="currentColor"
-            strokeWidth="6"
+            strokeWidth={strokeWidth}
             fill="transparent"
             className="text-muted/20"
           />
@@ -63,37 +72,38 @@ export const ScoreRing = ({ score, size = 'md', showLabel = true }: ScoreRingPro
           <circle
             cx="50%"
             cy="50%"
-            r="40"
-            stroke={scoreColor}
-            strokeWidth="6"
+            r={radius}
+            stroke="url(#scoreGradient)"
+            strokeWidth={strokeWidth}
             fill="transparent"
             strokeDasharray={strokeDasharray}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
-            className="transition-all duration-700 ease-out"
-            style={{
-              filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.4))'
-            }}
+            className="transition-all duration-1000 ease-out"
           />
+          {/* Gradient Definition */}
+          <defs>
+            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" className={getScoreGradient(score).split(' ')[0].replace('from-', '')} />
+              <stop offset="100%" className={getScoreGradient(score).split(' ')[1].replace('to-', '')} />
+            </linearGradient>
+          </defs>
         </svg>
         
         {/* Score Text */}
         <div className="flex flex-col items-center">
-          <span 
-            className={`font-bold ${textSizeClasses[size]}`}
-            style={{ color: scoreColor }}
-          >
+          <span className={`font-bold ${textSizeClasses[size]} ${getScoreColor(score)}`}>
             {score}
           </span>
         </div>
+        
+        {/* Hover Effect */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
       
       {showLabel && (
         <div className="text-center">
-          <div 
-            className={`font-semibold ${labelSizeClasses[size]}`}
-            style={{ color: scoreColor }}
-          >
+          <div className={`font-semibold ${labelSizeClasses[size]} ${getScoreColor(score)}`}>
             {getScoreLabel(score)}
           </div>
           <div className={`text-muted-foreground ${size === 'sm' ? 'text-xs' : 'text-sm'}`}>

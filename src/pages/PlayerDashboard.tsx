@@ -4,6 +4,7 @@ import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut } from 'lucid
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { EmptyState } from '@/components/ui/empty-state';
+import { AdBanner } from '@/components/AdBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -280,16 +281,17 @@ const PlayerDashboard = () => {
                 </div>
               ) : (
                 <EmptyState
-                  icon={Calendar}
-                  title="No tienes partidos próximos"
-                  description="Crea un nuevo partido o únete a uno existente para comenzar a jugar"
-                  actionText="Crear Partido"
-                  actionIcon={Plus}
+                  type="matches"
                   onAction={handleCreateMatch}
-                  variant="green"
                 />
               )}
             </div>
+
+            {/* Advertising Banner */}
+            <AdBanner 
+              location="dashboard" 
+              className="h-20 mb-4"
+            />
 
             {/* My Teams */}
             <div className="glass rounded-3xl p-6">
@@ -325,13 +327,8 @@ const PlayerDashboard = () => {
                 </div>
               ) : (
                 <EmptyState
-                  icon={Users}
-                  title="No tienes equipos"
-                  description="Crea tu primer equipo y comienza a invitar amigos para jugar juntos"
-                  actionText="Crear Equipo"
-                  actionIcon={Plus}
+                  type="teams"
                   onAction={handleCreateTeam}
-                  variant="gold"
                 />
               )}
             </div>

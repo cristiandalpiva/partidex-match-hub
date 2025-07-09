@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { EmptyState } from '@/components/ui/empty-state';
+import { AdBanner } from '@/components/AdBanner';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -252,6 +253,21 @@ const AdminDashboard = () => {
               </div>
             </div>
 
+            {/* Advertising Management Section */}
+            <div className="glass rounded-3xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-foreground">Publicidad Activa</h2>
+                <TrendingUp className="w-6 h-6 text-gold-premium" />
+              </div>
+              <AdBanner 
+                location="dashboard" 
+                className="h-24 rounded-lg"
+              />
+              <p className="text-sm text-muted-foreground mt-3">
+                Los espacios publicitarios ayudan a monetizar tu cancha sin afectar la experiencia del usuario.
+              </p>
+            </div>
+
             {/* Today's Schedule */}
             <div className="glass rounded-3xl p-6">
               <div className="flex items-center justify-between mb-6">
@@ -285,14 +301,15 @@ const AdminDashboard = () => {
                   ))}
                 </div>
               ) : (
-                <EmptyState
-                  icon={Calendar}
-                  title="No hay reservas para hoy"
-                  description="Las reservas de hoy aparecerán aquí. Puedes crear horarios disponibles o bloquear tiempo de mantenimiento."
-                  actionText="Gestionar Horarios"
-                  actionIcon={Clock}
-                  variant="gold"
-                />
+                <div className="text-center py-8 px-6">
+                  <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    No hay reservas para hoy
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Las reservas aparecerán aquí cuando los jugadores las realicen
+                  </p>
+                </div>
               )}
             </div>
           </div>

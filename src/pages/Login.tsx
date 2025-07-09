@@ -180,13 +180,13 @@ const Login = () => {
               required
             />
             <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-gold-premium transition-colors tap-scale"
+          >
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          </button>
           </div>
         </div>
 
@@ -195,10 +195,10 @@ const Login = () => {
           type="submit"
           variant="gold"
           size="lg"
-          className="w-full"
-          disabled={!selectedRole}
+          className="w-full tap-scale disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!selectedRole || loading}
         >
-          {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
+          {loading ? 'Procesando...' : (isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')}
         </GlassmorphismButton>
 
         {/* Toggle Auth Mode */}

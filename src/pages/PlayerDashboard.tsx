@@ -5,6 +5,8 @@ import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AdBanner } from '@/components/AdBanner';
+import { CreateTeamModal } from '@/components/modals/CreateTeamModal';
+import { CreateMatchModal } from '@/components/modals/CreateMatchModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -19,6 +21,8 @@ const PlayerDashboard = () => {
   const [teams, setTeams] = useState([]);
   const [matches, setMatches] = useState([]);
   const [score, setScore] = useState(null);
+  const [showCreateTeam, setShowCreateTeam] = useState(false);
+  const [showCreateMatch, setShowCreateMatch] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -109,11 +113,19 @@ const PlayerDashboard = () => {
   };
 
   const handleCreateTeam = () => {
-    console.log('Creating team...');
+    setShowCreateTeam(true);
   };
 
   const handleCreateMatch = () => {
-    console.log('Creating match...');
+    setShowCreateMatch(true);
+  };
+
+  const handleTeamCreated = () => {
+    loadUserTeams(user.id);
+  };
+
+  const handleMatchCreated = () => {
+    loadUserMatches(user.id);
   };
 
   return (
@@ -288,10 +300,12 @@ const PlayerDashboard = () => {
             </div>
 
             {/* Advertising Banner */}
-            <AdBanner 
-              location="dashboard" 
-              className="h-20 mb-4"
-            />
+            <div className="space-y-4">
+              <AdBanner 
+                location="dashboard" 
+                className="rounded-2xl"
+              />
+            </div>
 
             {/* My Teams */}
             <div className="glass rounded-3xl p-6">
@@ -335,6 +349,21 @@ const PlayerDashboard = () => {
           </div>
         )}
       </main>
+
+      {/* Modals */}
+      <CreateTeamModal
+        isOpen={showCreateTeam}
+        onClose={() => setShowCreateTeam(false)}
+        onTeamCreated={handleTeamCreated}
+        userId={user?.id}
+      />
+      
+      <CreateMatchModal
+        isOpen={showCreateMatch}
+        onClose={() => setShowCreateMatch(false)}
+        onMatchCreated={handleMatchCreated}
+        userId={user?.id}
+      />
 
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/10 md:hidden">

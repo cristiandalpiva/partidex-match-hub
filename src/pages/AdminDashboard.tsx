@@ -4,6 +4,8 @@ import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut } from '
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AdBanner } from '@/components/AdBanner';
+import { AddFieldModal } from '@/components/modals/AddFieldModal';
+import { PaymentModal } from '@/components/modals/PaymentModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +19,9 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [fields, setFields] = useState([]);
   const [matches, setMatches] = useState([]);
+  const [showAddField, setShowAddField] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(null);
 
   useEffect(() => {
     checkAuth();
@@ -102,6 +107,23 @@ const AdminDashboard = () => {
     }).format(amount);
   };
 
+  const handleAddField = () => {
+    setShowAddField(true);
+  };
+
+  const handleFieldAdded = () => {
+    loadAdminFields(user.id);
+  };
+
+  const handlePaymentModal = (payment: any) => {
+    setSelectedPayment(payment);
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentUpdated = () => {
+    loadTodayMatches(user.id);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gold-premium/5 via-background to-green-dynamic/5">
       {/* Header */}
@@ -123,6 +145,7 @@ const AdminDashboard = () => {
                 variant="gold"
                 size="sm"
                 icon={MapPin}
+                onClick={handleAddField}
               >
                 Nueva Cancha
               </GlassmorphismButton>
@@ -254,18 +277,11 @@ const AdminDashboard = () => {
             </div>
 
             {/* Advertising Management Section */}
-            <div className="glass rounded-3xl p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-foreground">Publicidad Activa</h2>
-                <TrendingUp className="w-6 h-6 text-gold-premium" />
-              </div>
+            <div className="space-y-4">
               <AdBanner 
                 location="dashboard" 
-                className="h-24 rounded-lg"
+                className="rounded-2xl"
               />
-              <p className="text-sm text-muted-foreground mt-3">
-                Los espacios publicitarios ayudan a monetizar tu cancha sin afectar la experiencia del usuario.
-              </p>
             </div>
 
             {/* Today's Schedule */}
@@ -315,6 +331,22 @@ const AdminDashboard = () => {
           </div>
         )}
       </main>
+
+      {/* Modals */}
+      <AddFieldModal
+        isOpen={showAddField}
+        onClose={() => setShowAddField(false)}
+        onFieldAdded={handleFieldAdded}
+        userId={user?.id}
+      />
+      
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        onPaymentUpdated={handlePaymentUpdated}
+        payment={selectedPayment}
+        isAdmin={true}
+      />
 
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/10 md:hidden">

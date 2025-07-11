@@ -20,7 +20,11 @@ export const CreateMatchModal = ({ isOpen, onClose, onMatchCreated, userId }: Cr
     team_id: '',
     field_id: '',
     date: '',
-    time: ''
+    time: '',
+    gender_type: '',
+    player_count: '',
+    allow_substitutes: '',
+    substitute_count: ''
   });
   const [loading, setLoading] = useState(false);
   const [teams, setTeams] = useState<any[]>([]);
@@ -95,7 +99,7 @@ export const CreateMatchModal = ({ isOpen, onClose, onMatchCreated, userId }: Cr
 
       onMatchCreated();
       onClose();
-      setFormData({ team_id: '', field_id: '', date: '', time: '' });
+      setFormData({ team_id: '', field_id: '', date: '', time: '', gender_type: '', player_count: '', allow_substitutes: '', substitute_count: '' });
     } catch (error) {
       console.error('Error creating match:', error);
       toast({
@@ -115,7 +119,7 @@ export const CreateMatchModal = ({ isOpen, onClose, onMatchCreated, userId }: Cr
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="glass rounded-3xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-background rounded-3xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl border">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-green-dynamic to-green-dynamic-dark rounded-xl flex items-center justify-center">
@@ -188,14 +192,82 @@ export const CreateMatchModal = ({ isOpen, onClose, onMatchCreated, userId }: Cr
 
             <div className="space-y-2">
               <Label htmlFor="time">Hora</Label>
-              <Input
-                id="time"
-                type="time"
-                value={formData.time}
-                onChange={(e) => setFormData(prev => ({ ...prev, time: e.target.value }))}
-                required
-              />
+              <Select value={formData.time} onValueChange={(value) => setFormData(prev => ({ ...prev, time: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona hora" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 14 }, (_, i) => i + 8).map(hour => (
+                    <SelectItem key={hour} value={`${hour.toString().padStart(2, '0')}:00`}>
+                      {hour}:00
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="gender_type">Tipo de partido</Label>
+              <Select value={formData.gender_type} onValueChange={(value) => setFormData(prev => ({ ...prev, gender_type: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mixto">Mixto</SelectItem>
+                  <SelectItem value="masculino">Masculino</SelectItem>
+                  <SelectItem value="femenino">Femenino</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="player_count">Modalidad</Label>
+              <Select value={formData.player_count} onValueChange={(value) => setFormData(prev => ({ ...prev, player_count: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Jugadores" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">Fútbol 5</SelectItem>
+                  <SelectItem value="8">Fútbol 8</SelectItem>
+                  <SelectItem value="11">Fútbol 11</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="allow_substitutes">¿Suplentes?</Label>
+              <Select value={formData.allow_substitutes} onValueChange={(value) => setFormData(prev => ({ ...prev, allow_substitutes: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sí/No" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="si">Sí</SelectItem>
+                  <SelectItem value="no">No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {formData.allow_substitutes === 'si' && (
+              <div className="space-y-2">
+                <Label htmlFor="substitute_count">Cantidad</Label>
+                <Select value={formData.substitute_count} onValueChange={(value) => setFormData(prev => ({ ...prev, substitute_count: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Número" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 suplente</SelectItem>
+                    <SelectItem value="2">2 suplentes</SelectItem>
+                    <SelectItem value="3">3 suplentes</SelectItem>
+                    <SelectItem value="4">4 suplentes</SelectItem>
+                    <SelectItem value="5">5 suplentes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           {teams.length === 0 && (
@@ -219,7 +291,7 @@ export const CreateMatchModal = ({ isOpen, onClose, onMatchCreated, userId }: Cr
               type="submit"
               variant="green"
               className="flex-1"
-              disabled={loading || !formData.team_id || !formData.field_id || !formData.date || !formData.time}
+              disabled={loading || !formData.team_id || !formData.field_id || !formData.date || !formData.time || !formData.gender_type || !formData.player_count}
               icon={loading ? undefined : Calendar}
             >
               {loading ? 'Creando...' : 'Crear Partido'}

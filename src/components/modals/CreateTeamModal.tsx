@@ -18,9 +18,17 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
-    type: '',
-    memberEmails: ['']
+    memberEmails: [''],
+    inviteCode: ''
   });
+
+  // Generate invite code when modal opens
+  React.useEffect(() => {
+    if (isOpen && !formData.inviteCode) {
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      setFormData(prev => ({ ...prev, inviteCode: code }));
+    }
+  }, [isOpen]);
   const [loading, setLoading] = useState(false);
 
   const handleAddEmail = () => {
@@ -48,7 +56,7 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.type) return;
+    if (!formData.name.trim()) return;
 
     setLoading(true);
     try {
@@ -57,7 +65,7 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
         .from('teams')
         .insert({
           name: formData.name.trim(),
-          type: formData.type,
+          type: 'flexible', // Teams can play in different formats
           owner_id: userId
         })
         .select()
@@ -95,7 +103,7 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
 
       onTeamCreated();
       onClose();
-      setFormData({ name: '', type: '', memberEmails: [''] });
+      setFormData({ name: '', memberEmails: [''], inviteCode: '' });
     } catch (error) {
       console.error('Error creating team:', error);
       toast({
@@ -112,7 +120,7 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="glass rounded-3xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-background rounded-3xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl border">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-gold-premium to-gold-premium-light rounded-xl flex items-center justify-center">
@@ -141,17 +149,17 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="type">Modalidad</Label>
-            <Select value={formData.type} onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecciona modalidad" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">Fútbol 5</SelectItem>
-                <SelectItem value="8">Fútbol 8</SelectItem>
-                <SelectItem value="11">Fútbol 11</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="inviteCode">Código de invitación (opcional)</Label>
+            <Input
+              id="inviteCode"
+              value={formData.inviteCode || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, inviteCode: e.target.value }))}
+              placeholder="Genera un código único para invitar"
+              readOnly
+            />
+            <p className="text-xs text-muted-foreground">
+              Los jugadores pueden unirse usando este código
+            </p>
           </div>
 
           <div className="space-y-3">
@@ -201,7 +209,7 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
               type="submit"
               variant="gold"
               className="flex-1"
-              disabled={loading || !formData.name.trim() || !formData.type}
+              disabled={loading || !formData.name.trim()}
               icon={loading ? undefined : Users}
             >
               {loading ? 'Creando...' : 'Crear Equipo'}

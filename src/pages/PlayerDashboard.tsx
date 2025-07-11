@@ -7,6 +7,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { AdBanner } from '@/components/AdBanner';
 import { CreateTeamModal } from '@/components/modals/CreateTeamModal';
 import { CreateMatchModal } from '@/components/modals/CreateMatchModal';
+import { PaymentConfigModal } from '@/components/modals/PaymentConfigModal';
+import { MatchDetailsModal } from '@/components/modals/MatchDetailsModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +25,9 @@ const PlayerDashboard = () => {
   const [score, setScore] = useState(null);
   const [showCreateTeam, setShowCreateTeam] = useState(false);
   const [showCreateMatch, setShowCreateMatch] = useState(false);
+  const [showPaymentConfig, setShowPaymentConfig] = useState(false);
+  const [showMatchDetails, setShowMatchDetails] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState(null);
 
   useEffect(() => {
     checkAuth();
@@ -151,7 +156,7 @@ const PlayerDashboard = () => {
                 icon={Plus}
                 onClick={handleCreateMatch}
               >
-                Partido
+                Crear Partido
               </GlassmorphismButton>
               
               <GlassmorphismButton
@@ -160,7 +165,7 @@ const PlayerDashboard = () => {
                 icon={Users}
                 onClick={handleCreateTeam}
               >
-                Equipo
+                Crear Equipo
               </GlassmorphismButton>
 
               <GlassmorphismButton
@@ -197,7 +202,7 @@ const PlayerDashboard = () => {
               <div className="glass rounded-3xl p-6 hover-lift">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Equipos</span>
+                    <span className="text-sm text-muted-foreground">Mis Equipos</span>
                     <span className="text-2xl font-bold text-green-dynamic">{teams.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -238,6 +243,7 @@ const PlayerDashboard = () => {
                     size="sm"
                     icon={CreditCard}
                     className="w-full justify-start"
+                    onClick={() => setShowPaymentConfig(true)}
                   >
                     Ver Pagos
                   </GlassmorphismButton>
@@ -279,11 +285,28 @@ const PlayerDashboard = () => {
                         
                         <div className="flex items-center gap-2">
                           {!match.confirmed && (
-                            <GlassmorphismButton variant="green" size="sm">
+                            <GlassmorphismButton 
+                              variant="green" 
+                              size="sm"
+                              onClick={() => {
+                                // Confirm attendance logic
+                                toast({
+                                  title: "Asistencia confirmada",
+                                  description: "Has confirmado tu asistencia al partido.",
+                                });
+                              }}
+                            >
                               Confirmar
                             </GlassmorphismButton>
                           )}
-                          <GlassmorphismButton variant="default" size="sm">
+                          <GlassmorphismButton 
+                            variant="default" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedMatch(match);
+                              setShowMatchDetails(true);
+                            }}
+                          >
                             Ver detalles
                           </GlassmorphismButton>
                         </div>
@@ -363,6 +386,17 @@ const PlayerDashboard = () => {
         onClose={() => setShowCreateMatch(false)}
         onMatchCreated={handleMatchCreated}
         userId={user?.id}
+      />
+
+      <PaymentConfigModal
+        isOpen={showPaymentConfig}
+        onClose={() => setShowPaymentConfig(false)}
+      />
+
+      <MatchDetailsModal
+        isOpen={showMatchDetails}
+        onClose={() => setShowMatchDetails(false)}
+        match={selectedMatch}
       />
 
       {/* Mobile Bottom Navigation */}

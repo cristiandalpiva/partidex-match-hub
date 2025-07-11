@@ -6,6 +6,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { AdBanner } from '@/components/AdBanner';
 import { AddFieldModal } from '@/components/modals/AddFieldModal';
 import { PaymentModal } from '@/components/modals/PaymentModal';
+import { AdminCalendar } from '@/components/AdminCalendar';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -154,8 +155,18 @@ const AdminDashboard = () => {
                 variant="green"
                 size="sm"
                 icon={Calendar}
+                onClick={() => setActiveTab('calendar')}
               >
-                Bloquear Horario
+                Ver Agenda
+              </GlassmorphismButton>
+
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
+                icon={LogOut}
+                onClick={handleLogout}
+              >
+                Salir
               </GlassmorphismButton>
             </div>
           </div>
@@ -164,6 +175,10 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
+        {activeTab === 'calendar' && (
+          <AdminCalendar userId={user?.id} />
+        )}
+        
         {activeTab === 'dashboard' && (
           <div className="space-y-8 fade-in">
             {/* Today's Stats */}

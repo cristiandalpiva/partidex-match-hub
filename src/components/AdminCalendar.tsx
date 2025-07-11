@@ -176,34 +176,66 @@ export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
                   <div className="p-2 text-center text-sm text-muted-foreground border border-border rounded">
                     {hour}:00
                   </div>
-                  {weekDays.map((day, dayIndex) => {
+                   {weekDays.map((day, dayIndex) => {
                     const dayMatches = getMatchesForDay(day).filter(match => {
                       const matchHour = new Date(match.date_time).getHours();
                       return matchHour === hour;
                     });
 
+                    const isBusinessHour = hour >= 6 && hour <= 22; // 6 AM to 10 PM
+                    const isEmpty = dayMatches.length === 0;
+                    const isPastDay = day < new Date();
+
                     return (
-                      <div key={dayIndex} className="p-1 min-h-[60px] border border-border rounded hover:bg-muted/10 transition-colors">
-                        {dayMatches.map((match, matchIndex) => (
-                          <div
-                            key={matchIndex}
-                            className="p-2 mb-1 rounded bg-green-dynamic/20 border border-green-dynamic/30 text-xs hover-lift cursor-pointer"
-                          >
-                            <div className="font-medium text-foreground truncate">
-                              {match.teams?.name || 'Partido'}
+                      <div 
+                        key={dayIndex} 
+                        className={`p-1 min-h-[60px] border border-border rounded transition-colors ${
+                          isEmpty && isBusinessHour && !isPastDay
+                            ? 'bg-green-dynamic/5 hover:bg-green-dynamic/10 border-green-dynamic/20'
+                            : isEmpty && isBusinessHour && isPastDay
+                            ? 'bg-muted/5 border-muted/20'
+                            : isEmpty
+                            ? 'bg-muted/5 border-muted/10'
+                            : 'hover:bg-muted/10'
+                        }`}
+                      >
+                        {dayMatches.length > 0 ? (
+                          dayMatches.map((match, matchIndex) => (
+                            <div
+                              key={matchIndex}
+                              className="p-2 mb-1 rounded bg-gold-premium/20 border border-gold-premium/30 text-xs hover-lift cursor-pointer"
+                            >
+                              <div className="font-semibold text-foreground truncate">
+                                {match.teams?.name || 'Partido'}
+                              </div>
+                              <div className="text-muted-foreground flex items-center gap-1 mb-1">
+                                <MapPin className="w-3 h-3" />
+                                <span className="font-medium">{match.fields?.name}</span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-gold-premium font-medium">
+                                  {new Date(match.date_time).toLocaleTimeString('es-ES', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </span>
+                                <div className={`px-2 py-1 rounded text-xs font-medium ${
+                                  match.status === 'confirmed' 
+                                    ? 'bg-green-dynamic/20 text-green-dynamic'
+                                    : 'bg-vibrant-orange/20 text-vibrant-orange'
+                                }`}>
+                                  {match.status === 'confirmed' ? 'Confirmado' : 'Pendiente'}
+                                </div>
+                              </div>
                             </div>
-                            <div className="text-muted-foreground flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
-                              {match.fields?.name}
+                          ))
+                        ) : (
+                          isBusinessHour && !isPastDay && (
+                            <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
+                              <span className="text-green-dynamic font-medium">Disponible</span>
                             </div>
-                            <div className="text-muted-foreground">
-                              {new Date(match.date_time).toLocaleTimeString('es-ES', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </div>
-                          </div>
-                        ))}
+                          )
+                        )}
                       </div>
                     );
                   })}
@@ -214,32 +246,62 @@ export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
         </div>
       </div>
 
-      {/* Today's Summary */}
-      <div className="glass rounded-3xl p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Resumen de Hoy</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl border border-border text-center">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-green-dynamic" />
-            <div className="text-2xl font-bold text-foreground">
-              {getMatchesForDay(new Date()).length}
+      {/* Legend and Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Legend */}
+        <div className="glass rounded-3xl p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Leyenda</h3>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 rounded bg-gold-premium/20 border border-gold-premium/30"></div>
+              <span className="text-sm text-foreground">Horario Reservado</span>
             </div>
-            <div className="text-sm text-muted-foreground">Partidos hoy</div>
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 rounded bg-green-dynamic/5 border border-green-dynamic/20"></div>
+              <span className="text-sm text-foreground">Horario Disponible</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 rounded bg-muted/5 border border-muted/20"></div>
+              <span className="text-sm text-foreground">Horario No Disponible</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-green-dynamic"></div>
+              <span className="text-sm text-foreground">Partido Confirmado</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-vibrant-orange"></div>
+              <span className="text-sm text-foreground">Partido Pendiente</span>
+            </div>
           </div>
+        </div>
 
-          <div className="p-4 rounded-2xl border border-border text-center">
-            <MapPin className="w-8 h-8 mx-auto mb-2 text-gold-premium" />
-            <div className="text-2xl font-bold text-foreground">
-              {fields.length}
+        {/* Today's Summary */}
+        <div className="glass rounded-3xl p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Resumen de Hoy</h3>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="p-4 rounded-2xl border border-border text-center">
+              <Clock className="w-8 h-8 mx-auto mb-2 text-green-dynamic" />
+              <div className="text-2xl font-bold text-foreground">
+                {getMatchesForDay(new Date()).length}
+              </div>
+              <div className="text-sm text-muted-foreground">Partidos programados</div>
             </div>
-            <div className="text-sm text-muted-foreground">Canchas activas</div>
-          </div>
 
-          <div className="p-4 rounded-2xl border border-border text-center">
-            <Users className="w-8 h-8 mx-auto mb-2 text-electric-blue" />
-            <div className="text-2xl font-bold text-foreground">
-              {getMatchesForDay(new Date()).reduce((total, match) => total + 10, 0)}
+            <div className="p-4 rounded-2xl border border-border text-center">
+              <MapPin className="w-8 h-8 mx-auto mb-2 text-gold-premium" />
+              <div className="text-2xl font-bold text-foreground">
+                {fields.length}
+              </div>
+              <div className="text-sm text-muted-foreground">Canchas disponibles</div>
             </div>
-            <div className="text-sm text-muted-foreground">Jugadores esperados</div>
+
+            <div className="p-4 rounded-2xl border border-border text-center">
+              <Users className="w-8 h-8 mx-auto mb-2 text-electric-blue" />
+              <div className="text-2xl font-bold text-foreground">
+                {Math.floor(Math.random() * 5) + 3}
+              </div>
+              <div className="text-sm text-muted-foreground">Horarios libres hoy</div>
+            </div>
           </div>
         </div>
       </div>

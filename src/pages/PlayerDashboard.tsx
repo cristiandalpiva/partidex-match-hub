@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut } from 'lucide-react';
+import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut, Check, X } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -9,6 +9,8 @@ import { CreateTeamModal } from '@/components/modals/CreateTeamModal';
 import { CreateMatchModal } from '@/components/modals/CreateMatchModal';
 import { PaymentConfigModal } from '@/components/modals/PaymentConfigModal';
 import { MatchDetailsModal } from '@/components/modals/MatchDetailsModal';
+import { MyTeamsModal } from '@/components/modals/MyTeamsModal';
+import { OnboardingFlow } from '@/components/OnboardingFlow';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +30,8 @@ const PlayerDashboard = () => {
   const [showPaymentConfig, setShowPaymentConfig] = useState(false);
   const [showMatchDetails, setShowMatchDetails] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState(null);
+  const [showMyTeams, setShowMyTeams] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -57,6 +61,11 @@ const PlayerDashboard = () => {
       }
 
       setProfile(profileData);
+
+      // Check if onboarding is needed
+      if (!profileData?.onboarding_completed) {
+        setShowOnboarding(true);
+      }
 
       // Load user data
       await Promise.all([
@@ -133,6 +142,39 @@ const PlayerDashboard = () => {
     loadUserMatches(user.id);
   };
 
+  const handleAttendanceChange = async (matchId: string, status: string) => {
+    try {
+      const { error } = await supabase
+        .from('attendance')
+        .update({ status })
+        .eq('match_id', matchId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Reload matches to reflect the change
+      loadUserMatches(user.id);
+      
+      toast({
+        title: "Asistencia actualizada",
+        description: `Has marcado tu asistencia como: ${status === 'confirmed' ? 'Confirmo' : status === 'declined' ? 'No asistiré' : 'Quizás'}`,
+      });
+    } catch (error) {
+      console.error('Error updating attendance:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar tu asistencia.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    // Reload profile to get updated data
+    checkAuth();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-dynamic/5 via-background to-gold-premium/5">
       {/* Header */}
@@ -201,10 +243,13 @@ const PlayerDashboard = () => {
               {/* Quick Stats */}
               <div className="glass rounded-3xl p-6 hover-lift">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Mis Equipos</span>
+                  <button 
+                    className="flex items-center justify-between w-full text-left hover:bg-white/5 rounded-lg p-2 transition-colors"
+                    onClick={() => setShowMyTeams(true)}
+                  >
+                    <span className="text-sm text-muted-foreground">Equipos</span>
                     <span className="text-2xl font-bold text-green-dynamic">{teams.length}</span>
-                  </div>
+                  </button>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Próximos partidos</span>
                     <span className="text-2xl font-bold text-gold-premium">{matches.length}</span>
@@ -260,59 +305,100 @@ const PlayerDashboard = () => {
 
               {matches.length > 0 ? (
                 <div className="space-y-4">
-                  {matches.map((match: any, index) => (
-                    <div key={match.id} className={`p-4 rounded-2xl border transition-all hover-lift ${
-                      match.confirmed 
-                        ? 'border-green-dynamic/30 bg-green-dynamic/5' 
-                        : 'border-vibrant-orange/30 bg-vibrant-orange/5'
-                    } ${index === 0 ? 'slide-up' : ''}`}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-3 h-3 rounded-full ${
-                            match.confirmed ? 'bg-green-dynamic' : 'bg-vibrant-orange animate-pulse'
-                          }`} />
-                          <div>
-                            <h3 className="font-semibold text-foreground">{match.teamName}</h3>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span>{match.date} • {match.time}</span>
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4" />
-                                <span>{match.field}</span>
+                  {matches.map((match: any, index) => {
+                    const matchDate = new Date(match.date_time);
+                    const attendanceStatus = match.attendance?.[0]?.status || 'maybe';
+                    
+                    return (
+                      <div key={match.id} className={`p-4 rounded-2xl border transition-all hover-lift ${
+                        attendanceStatus === 'confirmed' 
+                          ? 'border-green-dynamic/30 bg-green-dynamic/5' 
+                          : attendanceStatus === 'declined'
+                          ? 'border-red-500/30 bg-red-500/5'
+                          : 'border-vibrant-orange/30 bg-vibrant-orange/5'
+                      } ${index === 0 ? 'slide-up' : ''}`}>
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-3 h-3 rounded-full ${
+                              attendanceStatus === 'confirmed' ? 'bg-green-dynamic' : 
+                              attendanceStatus === 'declined' ? 'bg-red-500' :
+                              'bg-vibrant-orange animate-pulse'
+                            }`} />
+                            <div>
+                              <h3 className="font-semibold text-foreground">
+                                {match.teams?.name || 'Equipo'}
+                              </h3>
+                              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-4 h-4" />
+                                  {matchDate.toLocaleDateString()} • {matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </span>
+                                <div className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4" />
+                                  <span>{match.fields?.name || 'Campo'} - {match.fields?.location}</span>
+                                </div>
+                              </div>
+                              <div className="mt-2 flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground">Estado:</span>
+                                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                                  attendanceStatus === 'confirmed' ? 'bg-green-dynamic/20 text-green-dynamic' :
+                                  attendanceStatus === 'declined' ? 'bg-red-500/20 text-red-500' :
+                                  'bg-yellow-500/20 text-yellow-600'
+                                }`}>
+                                  {attendanceStatus === 'confirmed' ? 'Confirmado' :
+                                   attendanceStatus === 'declined' ? 'No asistiré' : 'Pendiente'}
+                                </span>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2">
-                          {!match.confirmed && (
+                          
+                          <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
+                            {/* Attendance buttons */}
+                            <div className="flex items-center gap-1">
+                              <GlassmorphismButton
+                                variant={attendanceStatus === 'confirmed' ? 'green' : 'default'}
+                                size="sm"
+                                icon={Check}
+                                onClick={() => handleAttendanceChange(match.id, 'confirmed')}
+                                className="text-xs px-2 py-1"
+                              >
+                                Asistiré
+                              </GlassmorphismButton>
+                              <GlassmorphismButton
+                                variant={attendanceStatus === 'declined' ? 'default' : 'default'}
+                                size="sm"
+                                icon={X}
+                                onClick={() => handleAttendanceChange(match.id, 'declined')}
+                                className="text-xs px-2 py-1"
+                              >
+                                No asistiré
+                              </GlassmorphismButton>
+                              <GlassmorphismButton
+                                variant={attendanceStatus === 'maybe' ? 'gold' : 'default'}
+                                size="sm"
+                                onClick={() => handleAttendanceChange(match.id, 'maybe')}
+                                className="text-xs px-2 py-1"
+                              >
+                                Quizás
+                              </GlassmorphismButton>
+                            </div>
+                            
                             <GlassmorphismButton 
-                              variant="green" 
+                              variant="default" 
                               size="sm"
                               onClick={() => {
-                                // Confirm attendance logic
-                                toast({
-                                  title: "Asistencia confirmada",
-                                  description: "Has confirmado tu asistencia al partido.",
-                                });
+                                setSelectedMatch(match);
+                                setShowMatchDetails(true);
                               }}
+                              className="text-xs"
                             >
-                              Confirmar
+                              Ver detalles
                             </GlassmorphismButton>
-                          )}
-                          <GlassmorphismButton 
-                            variant="default" 
-                            size="sm"
-                            onClick={() => {
-                              setSelectedMatch(match);
-                              setShowMatchDetails(true);
-                            }}
-                          >
-                            Ver detalles
-                          </GlassmorphismButton>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <EmptyState
@@ -397,6 +483,18 @@ const PlayerDashboard = () => {
         isOpen={showMatchDetails}
         onClose={() => setShowMatchDetails(false)}
         match={selectedMatch}
+      />
+
+      <MyTeamsModal
+        isOpen={showMyTeams}
+        onClose={() => setShowMyTeams(false)}
+        userId={user?.id}
+      />
+
+      <OnboardingFlow
+        isOpen={showOnboarding}
+        onComplete={handleOnboardingComplete}
+        userProfile={profile}
       />
 
       {/* Mobile Bottom Navigation */}

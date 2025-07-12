@@ -198,6 +198,8 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          onboarding_completed: boolean | null
+          onboarding_data: Json | null
           role: string
           updated_at: string
           user_id: string
@@ -207,6 +209,8 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          onboarding_completed?: boolean | null
+          onboarding_data?: Json | null
           role: string
           updated_at?: string
           user_id: string
@@ -216,6 +220,8 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          onboarding_completed?: boolean | null
+          onboarding_data?: Json | null
           role?: string
           updated_at?: string
           user_id?: string

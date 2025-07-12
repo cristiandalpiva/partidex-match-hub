@@ -93,7 +93,7 @@ export const OnboardingFlow = ({ isOpen, onComplete, userProfile }: OnboardingFl
         .from('profiles')
         .update({
           onboarding_completed: true,
-          onboarding_data: onboardingData
+          onboarding_data: JSON.stringify(onboardingData)
         })
         .eq('user_id', userProfile.user_id);
 
@@ -385,7 +385,7 @@ export const OnboardingFlow = ({ isOpen, onComplete, userProfile }: OnboardingFl
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="glass max-w-2xl" hideCloseButton>
+      <DialogContent className="glass max-w-2xl"  onInteractOutside={(e) => e.preventDefault()}>
         <div className="space-y-6">
           {/* Progress Bar */}
           <div className="space-y-2">

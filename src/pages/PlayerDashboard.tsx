@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut, Check, X } from 'lucide-react';
+import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut, Check, X, Bell, User } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -11,6 +11,8 @@ import { PaymentConfigModal } from '@/components/modals/PaymentConfigModal';
 import { MatchDetailsModal } from '@/components/modals/MatchDetailsModal';
 import { MyTeamsModal } from '@/components/modals/MyTeamsModal';
 import { OnboardingFlow } from '@/components/OnboardingFlow';
+import { NotificationPanel } from '@/components/NotificationPanel';
+import { ProfilePage } from '@/components/ProfilePage';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -32,6 +34,8 @@ const PlayerDashboard = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [showMyTeams, setShowMyTeams] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -193,6 +197,24 @@ const PlayerDashboard = () => {
             
             <div className="flex items-center gap-2">
               <GlassmorphismButton
+                variant="default"
+                size="sm"
+                icon={Bell}
+                onClick={() => setShowNotifications(true)}
+              >
+                Notificaciones
+              </GlassmorphismButton>
+
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
+                icon={User}
+                onClick={() => setShowProfile(true)}
+              >
+                Perfil
+              </GlassmorphismButton>
+              
+              <GlassmorphismButton
                 variant="gold"
                 size="sm"
                 icon={Plus}
@@ -225,7 +247,12 @@ const PlayerDashboard = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
-        {activeTab === 'dashboard' && (
+        {showProfile ? (
+          <ProfilePage 
+            userId={user?.id} 
+            onBack={() => setShowProfile(false)} 
+          />
+        ) : activeTab === 'dashboard' && (
           <div className="space-y-8 fade-in">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -420,7 +447,7 @@ const PlayerDashboard = () => {
             <div className="space-y-4">
               <AdBanner 
                 location="dashboard" 
-                className="rounded-2xl"
+                className="rounded-2xl h-32 object-cover"
               />
             </div>
 
@@ -470,6 +497,13 @@ const PlayerDashboard = () => {
           </div>
         )}
       </main>
+
+      {/* Modals and Panels */}
+      <NotificationPanel
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        userId={user?.id}
+      />
 
       {/* Modals */}
       <CreateTeamModal

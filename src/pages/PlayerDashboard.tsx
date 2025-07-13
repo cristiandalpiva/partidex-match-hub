@@ -193,7 +193,7 @@ const PlayerDashboard = () => {
             
             <div className="flex items-center gap-2">
               <GlassmorphismButton
-                variant="green"
+                variant="gold"
                 size="sm"
                 icon={Plus}
                 onClick={handleCreateMatch}
@@ -236,7 +236,15 @@ const PlayerDashboard = () => {
                   <Trophy className="w-5 h-5 text-gold-premium" />
                 </div>
                 <div className="flex justify-center">
-                  <ScoreRing score={score?.score || 100} size="md" />
+                  {score && score.total_games > 0 ? (
+                    <ScoreRing score={score.score} size="md" />
+                  ) : (
+                    <div className="text-center p-4">
+                      <p className="text-muted-foreground text-sm">
+                        Tu Score de Responsabilidad aparecerá aquí una vez que hayas participado en partidos.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -266,7 +274,7 @@ const PlayerDashboard = () => {
                 <h3 className="font-semibold text-foreground mb-4">Acciones Rápidas</h3>
                 <div className="space-y-3">
                   <GlassmorphismButton
-                    variant="green"
+                    variant="gold"
                     size="sm"
                     icon={Plus}
                     onClick={handleCreateMatch}
@@ -360,24 +368,24 @@ const PlayerDashboard = () => {
                                 size="sm"
                                 icon={Check}
                                 onClick={() => handleAttendanceChange(match.id, 'confirmed')}
-                                className="text-xs px-2 py-1"
+                                className={`text-xs px-2 py-1 ${attendanceStatus === 'confirmed' ? 'bg-green-dynamic text-black-deep' : ''}`}
                               >
                                 Asistiré
                               </GlassmorphismButton>
                               <GlassmorphismButton
-                                variant={attendanceStatus === 'declined' ? 'default' : 'default'}
+                                variant="default"
                                 size="sm"
                                 icon={X}
                                 onClick={() => handleAttendanceChange(match.id, 'declined')}
-                                className="text-xs px-2 py-1"
+                                className={`text-xs px-2 py-1 ${attendanceStatus === 'declined' ? 'bg-green-dynamic text-black-deep' : ''}`}
                               >
                                 No asistiré
                               </GlassmorphismButton>
                               <GlassmorphismButton
-                                variant={attendanceStatus === 'maybe' ? 'gold' : 'default'}
+                                variant="default"
                                 size="sm"
                                 onClick={() => handleAttendanceChange(match.id, 'maybe')}
-                                className="text-xs px-2 py-1"
+                                className={`text-xs px-2 py-1 ${attendanceStatus === 'maybe' ? 'bg-green-dynamic text-black-deep' : ''}`}
                               >
                                 Quizás
                               </GlassmorphismButton>
@@ -423,13 +431,17 @@ const PlayerDashboard = () => {
                 <Users className="w-6 h-6 text-gold-premium" />
               </div>
 
-              {teams.length > 0 ? (
+                {teams.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {teams.map((team: any) => (
-                    <div key={team.id} className="p-4 rounded-2xl border border-border hover-lift transition-all cursor-pointer">
+                    <div 
+                      key={team.id} 
+                      className="p-4 rounded-2xl border border-border hover-lift transition-all cursor-pointer"
+                      onClick={() => setShowMyTeams(true)}
+                    >
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-foreground">{team.name}</h3>
-                        {team.isOwner && (
+                        {team.owner_id === user?.id && (
                           <div className="px-2 py-1 bg-gold-premium/20 text-gold-premium text-xs rounded-lg font-medium">
                             Capitán
                           </div>

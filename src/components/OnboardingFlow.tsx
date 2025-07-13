@@ -127,9 +127,18 @@ export const OnboardingFlow = ({ isOpen, onComplete, userProfile }: OnboardingFl
               <h2 className="text-2xl font-bold text-foreground mb-2">
                 ¡Bienvenido a Partidex!
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground mb-4">
                 Vamos a configurar tu perfil para encontrar los mejores partidos para ti.
               </p>
+              <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+                <p className="text-foreground font-medium">
+                  ¡Sé responsable y disfruta al máximo!
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Te invitamos a ser puntual con tus confirmaciones, pagos y asistencias. 
+                  ¡Así todos podemos disfrutar de una experiencia increíble jugando fútbol!
+                </p>
+              </div>
             </div>
           </div>
         );
@@ -308,9 +317,18 @@ export const OnboardingFlow = ({ isOpen, onComplete, userProfile }: OnboardingFl
               <h2 className="text-2xl font-bold text-foreground mb-2">
                 ¡Bienvenido, Administrador!
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground mb-4">
                 Configura tu perfil para gestionar tu cancha de la mejor manera.
               </p>
+              <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+                <p className="text-foreground font-medium">
+                  ¡Construyamos una comunidad responsable!
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Ayúdanos a crear espacios donde todos disfruten del fútbol con responsabilidad, 
+                  puntualidad y compañerismo.
+                </p>
+              </div>
             </div>
           </div>
         );
@@ -385,7 +403,7 @@ export const OnboardingFlow = ({ isOpen, onComplete, userProfile }: OnboardingFl
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="glass max-w-2xl"  onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="bg-background max-w-2xl border" onInteractOutside={(e) => e.preventDefault()}>
         <div className="space-y-6">
           {/* Progress Bar */}
           <div className="space-y-2">

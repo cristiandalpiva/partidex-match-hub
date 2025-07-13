@@ -50,13 +50,13 @@ export const PaymentConfigModal = ({ isOpen, onClose, match }: PaymentConfigModa
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-background rounded-3xl p-6 w-full max-w-md shadow-xl border">
+      <div className="bg-background rounded-3xl p-6 w-full max-w-2xl shadow-xl border">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-green-dynamic to-green-dynamic-dark rounded-xl flex items-center justify-center">
               <CreditCard className="w-6 h-6 text-secondary-foreground" />
             </div>
-            <h2 className="text-xl font-bold text-foreground">Configurar Pago</h2>
+            <h2 className="text-xl font-bold text-foreground">Dashboard de Pagos</h2>
           </div>
           <button
             onClick={onClose}
@@ -66,68 +66,88 @@ export const PaymentConfigModal = ({ isOpen, onClose, match }: PaymentConfigModa
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="amount">Monto por jugador</Label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                value={formData.amount}
-                onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
-                placeholder="0.00"
-                className="pl-10"
-                required
-              />
+        <div className="space-y-6">
+          {/* Payment Methods Section */}
+          <div className="glass rounded-2xl p-4">
+            <h3 className="font-semibold text-foreground mb-3">Métodos de Pago Configurados</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-lg border border-border">
+                <div className="flex items-center gap-3">
+                  <CreditCard className="w-5 h-5 text-muted-foreground" />
+                  <span className="font-medium">Tarjeta terminada en ****4567</span>
+                </div>
+                <span className="text-sm text-green-600">Activo</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg border border-border">
+                <div className="flex items-center gap-3">
+                  <DollarSign className="w-5 h-5 text-muted-foreground" />
+                  <span className="font-medium">MercadoPago</span>
+                </div>
+                <span className="text-sm text-green-600">Activo</span>
+              </div>
+            </div>
+            <GlassmorphismButton variant="default" size="sm" className="mt-3">
+              Configurar Métodos de Pago
+            </GlassmorphismButton>
+          </div>
+
+          {/* Completed Payments Section */}
+          <div className="glass rounded-2xl p-4">
+            <h3 className="font-semibold text-foreground mb-3">Pagos Realizados</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
+                <div>
+                  <p className="font-medium text-foreground">Partido en Cancha Central</p>
+                  <p className="text-sm text-muted-foreground">15 de Enero, 2024</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-green-600">$2,500</p>
+                  <p className="text-sm text-green-600">Pagado</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
+                <div>
+                  <p className="font-medium text-foreground">Partido en Club Atlético</p>
+                  <p className="text-sm text-muted-foreground">8 de Enero, 2024</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-green-600">$3,000</p>
+                  <p className="text-sm text-green-600">Pagado</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="method">Método de pago</Label>
-            <Select value={formData.method} onValueChange={(value) => setFormData(prev => ({ ...prev, method: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecciona método" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="efectivo">Efectivo</SelectItem>
-                <SelectItem value="transferencia">Transferencia</SelectItem>
-                <SelectItem value="mercadopago">MercadoPago</SelectItem>
-                <SelectItem value="tarjeta">Tarjeta</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notas adicionales (opcional)</Label>
-            <Input
-              id="notes"
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              placeholder="Ej: Pagar antes del partido"
-            />
+          {/* Pending Payments Section */}
+          <div className="glass rounded-2xl p-4">
+            <h3 className="font-semibold text-foreground mb-3">Pagos Pendientes</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+                <div>
+                  <p className="font-medium text-foreground">Partido en Estadio Norte</p>
+                  <p className="text-sm text-muted-foreground">22 de Enero, 2024</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-yellow-600">$2,800</p>
+                  <p className="text-sm text-yellow-600">Pendiente</p>
+                </div>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mt-3">
+              Tienes 1 pago pendiente por un total de $2,800
+            </p>
           </div>
 
           <div className="flex gap-3 pt-4">
             <GlassmorphismButton
-              type="button"
               variant="default"
               className="flex-1"
               onClick={onClose}
             >
-              Cancelar
-            </GlassmorphismButton>
-            <GlassmorphismButton
-              type="submit"
-              variant="green"
-              className="flex-1"
-              disabled={loading || !formData.amount || !formData.method}
-            >
-              {loading ? 'Configurando...' : 'Configurar'}
+              Cerrar
             </GlassmorphismButton>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

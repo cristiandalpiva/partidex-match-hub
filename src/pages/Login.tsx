@@ -45,12 +45,47 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedRole) return;
+    
+    // Validate role selection with user feedback
+    if (!selectedRole) {
+      toast({
+        title: "Selecciona tu rol",
+        description: "Por favor selecciona si eres Jugador o Administrador de Cancha",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate form data
+    if (!formData.email || !formData.password) {
+      toast({
+        title: "Campos incompletos",
+        description: "Por favor completa todos los campos obligatorios",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!isLogin && !formData.name) {
+      toast({
+        title: "Nombre requerido",
+        description: "Por favor ingresa tu nombre completo",
+        variant: "destructive"
+      });
+      return;
+    }
     
     setLoading(true);
     
     try {
       if (isLogin) {
+        // Clean up any existing auth state
+        try {
+          await supabase.auth.signOut({ scope: 'global' });
+        } catch (cleanupError) {
+          console.log('Cleanup error (ignorable):', cleanupError);
+        }
+
         const { data, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
@@ -59,6 +94,11 @@ const Login = () => {
         if (error) throw error;
 
         if (data.user) {
+          toast({
+            title: "¡Bienvenido!",
+            description: "Iniciando sesión...",
+          });
+
           // Get user profile to check role
           const { data: profile } = await supabase
             .from('profiles')
@@ -66,10 +106,20 @@ const Login = () => {
             .eq('user_id', data.user.id)
             .single();
 
+          // Navigate based on role, with fallback for role mismatch
           if (profile?.role === 'player') {
-            navigate('/player/dashboard');
+            window.location.href = '/player/dashboard';
           } else if (profile?.role === 'admin') {
-            navigate('/admin/dashboard');
+            window.location.href = '/admin/dashboard';
+          } else {
+            // Handle case where profile role doesn't match selected role
+            toast({
+              title: "Rol incorrecto",
+              description: `Tu cuenta está registrada como ${profile?.role || 'desconocido'}. Selecciona el rol correcto.`,
+              variant: "destructive"
+            });
+            setLoading(false);
+            return;
           }
         }
       } else {
@@ -89,15 +139,32 @@ const Login = () => {
 
         if (data.user) {
           toast({
-            title: "Cuenta creada exitosamente",
-            description: "Revisa tu email para confirmar tu cuenta",
+            title: "¡Cuenta creada exitosamente!",
+            description: "Revisa tu email para confirmar tu cuenta. Luego podrás iniciar sesión.",
           });
+          
+          // Switch to login mode after successful signup
+          setIsLogin(true);
+          setFormData({ email: formData.email, password: '', name: '' });
         }
       }
     } catch (error: any) {
+      console.error('Auth error:', error);
+      
+      let errorMessage = error.message;
+      
+      // Provide more user-friendly error messages
+      if (error.message.includes('Invalid login credentials')) {
+        errorMessage = 'Email o contraseña incorrectos. Verifica tus datos.';
+      } else if (error.message.includes('Email not confirmed')) {
+        errorMessage = 'Por favor confirma tu email antes de iniciar sesión.';
+      } else if (error.message.includes('User already registered')) {
+        errorMessage = 'Este email ya está registrado. Intenta iniciar sesión.';
+      }
+      
       toast({
         title: "Error de autenticación",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -118,11 +185,18 @@ const Login = () => {
       subtitle={isLogin ? 'Bienvenido de vuelta' : 'Únete a la comunidad'}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Role Selection */}
-        <RoleSelector 
-          selectedRole={selectedRole}
-          onRoleSelect={setSelectedRole}
-        />
+        {/* Role Selection - Highlight if not selected */}
+        <div className={`${!selectedRole ? 'ring-2 ring-destructive/50 rounded-xl p-2' : ''}`}>
+          <RoleSelector 
+            selectedRole={selectedRole}
+            onRoleSelect={setSelectedRole}
+          />
+          {!selectedRole && (
+            <p className="text-sm text-destructive mt-2 text-center">
+              ⚠️ Selecciona tu rol para continuar
+            </p>
+          )}
+        </div>
 
         {/* Name Field (Register only) */}
         {!isLogin && (

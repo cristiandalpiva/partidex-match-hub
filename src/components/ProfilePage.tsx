@@ -69,11 +69,11 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
         setFormData({
           name: profileData.name || '',
           avatar_url: profileData.avatar_url || '',
-          bio: profileData.bio || '',
-          location: profileData.location || '',
-          preferred_position: profileData.preferred_position || '',
-          phone: profileData.phone || '',
-          emergency_contact: profileData.emergency_contact || ''
+          bio: (profileData as any)?.bio || '',
+          location: (profileData as any)?.location || '',
+          preferred_position: (profileData as any)?.preferred_position || '',
+          phone: (profileData as any)?.phone || '',
+          emergency_contact: (profileData as any)?.emergency_contact || ''
         });
       }
 
@@ -473,7 +473,7 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
                   {stats.pendingPayments} pago{stats.pendingPayments !== 1 ? 's' : ''} pendiente{stats.pendingPayments !== 1 ? 's' : ''}
                 </p>
                 
-                <GlassmorphismButton variant="destructive" size="sm" className="mt-3">
+                <GlassmorphismButton variant="default" size="sm" className="mt-3">
                   Realizar Pago
                 </GlassmorphismButton>
               </div>

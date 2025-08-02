@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, Users, MapPin, Calendar, DollarSign, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { X, Users, MapPin, Calendar, DollarSign, CheckCircle, XCircle, Clock, Share2 } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
+import { ShareMatchModal } from './ShareMatchModal';
+import { useToast } from '@/hooks/use-toast';
 
 interface MatchDetailsModalProps {
   isOpen: boolean;
@@ -13,12 +15,33 @@ interface MatchDetailsModalProps {
 export const MatchDetailsModal = ({ isOpen, onClose, match }: MatchDetailsModalProps) => {
   const [players, setPlayers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userAttendance, setUserAttendance] = useState<any>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen && match) {
       loadMatchDetails();
+      getCurrentUser();
     }
   }, [isOpen, match]);
+
+  const getCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUser(user);
+    
+    if (user && match?.id) {
+      const { data } = await supabase
+        .from('attendance')
+        .select('*')
+        .eq('match_id', match.id)
+        .eq('user_id', user.id)
+        .single();
+      
+      setUserAttendance(data);
+    }
+  };
 
   const loadMatchDetails = async () => {
     if (!match?.id) return;
@@ -68,6 +91,37 @@ export const MatchDetailsModal = ({ isOpen, onClose, match }: MatchDetailsModalP
     if (!payment) return { icon: XCircle, text: 'Sin pago', color: 'text-gray-500' };
     if (payment.status === 'paid') return { icon: CheckCircle, text: 'Pagado', color: 'text-green-600' };
     return { icon: Clock, text: 'Pendiente', color: 'text-yellow-600' };
+  };
+
+  const updateAttendance = async (status: string) => {
+    if (!currentUser || !match?.id) return;
+    
+    try {
+      const { error } = await supabase
+        .from('attendance')
+        .upsert({
+          match_id: match.id,
+          user_id: currentUser.id,
+          status: status
+        });
+      
+      if (error) throw error;
+      
+      setUserAttendance({ ...userAttendance, status });
+      loadMatchDetails(); // Refresh the players list
+      
+      toast({
+        title: "¡Actualizado!",
+        description: `Tu estado de asistencia se actualizó a: ${getStatusBadge(status).label}`
+      });
+    } catch (error) {
+      console.error('Error updating attendance:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar tu asistencia",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -160,8 +214,43 @@ export const MatchDetailsModal = ({ isOpen, onClose, match }: MatchDetailsModalP
             )}
           </div>
 
+          {/* User Attendance Section */}
+          {currentUser && (
+            <div className="glass rounded-2xl p-4">
+              <h3 className="font-semibold text-foreground mb-3">Mi Asistencia</h3>
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {[
+                  { value: 'confirmed', label: 'Asistiré', emoji: '✅' },
+                  { value: 'maybe', label: 'Quizás', emoji: '❓' },
+                  { value: 'declined', label: 'No asistiré', emoji: '❌' }
+                ].map(option => (
+                  <button
+                    key={option.value}
+                    onClick={() => updateAttendance(option.value)}
+                    className={`p-3 rounded-lg border transition-all ${
+                      userAttendance?.status === option.value
+                        ? 'bg-green-dynamic text-black-deep border-green-dynamic font-medium'
+                        : 'border-border hover:bg-muted/50 text-foreground'
+                    }`}
+                  >
+                    <div className="text-lg mb-1">{option.emoji}</div>
+                    <div className="text-xs">{option.label}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex gap-3">
+            <GlassmorphismButton
+              variant="green"
+              className="flex-1 flex items-center gap-2"
+              onClick={() => setShowShareModal(true)}
+            >
+              <Share2 className="w-4 h-4" />
+              Compartir
+            </GlassmorphismButton>
             <GlassmorphismButton
               variant="default"
               className="flex-1"
@@ -172,6 +261,12 @@ export const MatchDetailsModal = ({ isOpen, onClose, match }: MatchDetailsModalP
           </div>
         </div>
       </div>
+      
+      <ShareMatchModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        match={match}
+      />
     </div>
   );
 };

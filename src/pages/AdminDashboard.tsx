@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const [showAddField, setShowAddField] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedField, setSelectedField] = useState<string | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -86,7 +87,8 @@ const AdminDashboard = () => {
       .select(`
         *,
         teams(name),
-        fields!inner(name)
+        fields!inner(name, id),
+        payments(amount, status)
       `)
       .eq('fields.admin_id', userId)
       .gte('date_time', startOfDay.toISOString())
@@ -94,6 +96,39 @@ const AdminDashboard = () => {
       .order('date_time', { ascending: true });
     
     if (data) setMatches(data);
+  };
+
+  const calculateTodayRevenue = () => {
+    return matches.reduce((total, match) => {
+      const payment = match.payments?.[0];
+      if (payment && payment.status === 'completed') {
+        return total + (parseFloat(payment.amount) || 0);
+      }
+      return total;
+    }, 0);
+  };
+
+  const calculateFieldStats = (fieldId: string) => {
+    const fieldMatches = matches.filter(match => match.field_id === fieldId);
+    const todayReservations = fieldMatches.length;
+    const revenue = fieldMatches.reduce((total, match) => {
+      const payment = match.payments?.[0];
+      if (payment && payment.status === 'completed') {
+        return total + (parseFloat(payment.amount) || 0);
+      }
+      return total;
+    }, 0);
+    
+    // Calculate available time slots for today (6 AM to 10 PM = 16 hours)
+    const totalSlots = 16;
+    const occupiedSlots = fieldMatches.length;
+    const freeSlots = Math.max(0, totalSlots - occupiedSlots);
+    
+    return {
+      todayReservations,
+      revenue,
+      freeSlots
+    };
   };
 
   const handleLogout = async () => {
@@ -152,7 +187,7 @@ const AdminDashboard = () => {
               </GlassmorphismButton>
               
               <GlassmorphismButton
-                variant="green"
+                variant="gold"
                 size="sm"
                 icon={Calendar}
                 onClick={() => setActiveTab('calendar')}
@@ -176,7 +211,7 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
         {activeTab === 'calendar' && (
-          <AdminCalendar userId={user?.id} />
+          <AdminCalendar userId={user?.id} selectedFieldId={selectedField} />
         )}
         
         {activeTab === 'dashboard' && (
@@ -189,7 +224,7 @@ const AdminDashboard = () => {
                   <DollarSign className="w-5 h-5 text-green-dynamic" />
                 </div>
                 <p className="text-2xl font-bold text-green-dynamic">
-                  {formatCurrency(0)}
+                  {formatCurrency(calculateTodayRevenue())}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">+15% vs ayer</p>
               </div>
@@ -209,13 +244,13 @@ const AdminDashboard = () => {
 
               <div className="glass rounded-3xl p-6 hover-lift">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-muted-foreground">Ocupación</h3>
-                  <TrendingUp className="w-5 h-5 text-electric-blue" />
+                  <h3 className="text-sm font-medium text-muted-foreground">Horarios Libres</h3>
+                  <Clock className="w-5 h-5 text-electric-blue" />
                 </div>
                 <p className="text-2xl font-bold text-electric-blue">
-                  85%
+                  {fields.reduce((total, field) => total + calculateFieldStats(field.id).freeSlots, 0)}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">Promedio general</p>
+                <p className="text-xs text-muted-foreground mt-1">Disponibles hoy</p>
               </div>
 
               <div className="glass rounded-3xl p-6 hover-lift">
@@ -234,60 +269,71 @@ const AdminDashboard = () => {
             <div className="glass rounded-3xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-foreground">Rendimiento por Cancha</h2>
-                <MapPin className="w-6 h-6 text-gold-premium" />
+                <div className="flex items-center gap-2">
+                  <select 
+                    value={selectedField || ""}
+                    onChange={(e) => setSelectedField(e.target.value || null)}
+                    className="px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-foreground text-sm"
+                  >
+                    <option value="">Todas las canchas</option>
+                    {fields.map((field: any) => (
+                      <option key={field.id} value={field.id}>{field.name}</option>
+                    ))}
+                  </select>
+                  <GlassmorphismButton
+                    variant="gold"
+                    size="sm"
+                    icon={Calendar}
+                    onClick={() => setActiveTab('calendar')}
+                  >
+                    Agenda Semanal
+                  </GlassmorphismButton>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {fields.map((field: any, index) => (
-                  <div key={field.id} className={`p-6 rounded-2xl border border-border hover-lift transition-all ${
-                    index === 0 ? 'slide-up' : ''
-                  }`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="font-semibold text-foreground text-lg">{field.name}</h3>
-                        <p className="text-sm text-muted-foreground">{field.location}</p>
+                {(selectedField ? fields.filter(f => f.id === selectedField) : fields).map((field: any, index) => {
+                  const stats = calculateFieldStats(field.id);
+                  return (
+                    <div key={field.id} className={`p-6 rounded-2xl border border-border hover-lift transition-all ${
+                      index === 0 ? 'slide-up' : ''
+                    }`}>
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h3 className="font-semibold text-foreground text-lg">{field.name}</h3>
+                          <p className="text-sm text-muted-foreground">{field.location}</p>
+                        </div>
+                        <GlassmorphismButton
+                          variant="default"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedField(field.id);
+                            setActiveTab('calendar');
+                          }}
+                        >
+                          Ver Agenda
+                        </GlassmorphismButton>
                       </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        field.occupancy >= 90 
-                          ? 'bg-green-dynamic/20 text-green-dynamic' 
-                          : field.occupancy >= 70
-                          ? 'bg-gold-premium/20 text-gold-premium'
-                          : 'bg-vibrant-orange/20 text-vibrant-orange'
-                      }`}>
-                        {field.occupancy}% ocupación
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Reservas hoy</p>
-                        <p className="text-xl font-bold text-foreground">{field.todayReservations}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Ingresos</p>
-                        <p className="text-xl font-bold text-green-dynamic">
-                          {formatCurrency(field.revenue)}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Occupancy Bar */}
-                    <div className="mt-4">
-                      <div className="w-full bg-muted/20 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full transition-all duration-700 ${
-                            field.occupancy >= 90 
-                              ? 'bg-gradient-to-r from-green-dynamic to-neon-green' 
-                              : field.occupancy >= 70
-                              ? 'bg-gradient-to-r from-gold-premium to-gold-premium-light'
-                              : 'bg-gradient-to-r from-vibrant-orange to-intense-red'
-                          }`}
-                          style={{ width: `${field.occupancy}%` }}
-                        />
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Reservas hoy</p>
+                          <p className="text-xl font-bold text-foreground">{stats.todayReservations}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Ingresos</p>
+                          <p className="text-xl font-bold text-green-dynamic">
+                            {formatCurrency(stats.revenue)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Horarios libres</p>
+                          <p className="text-xl font-bold text-electric-blue">{stats.freeSlots}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

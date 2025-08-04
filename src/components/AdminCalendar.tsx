@@ -6,18 +6,26 @@ import { useToast } from '@/hooks/use-toast';
 
 interface AdminCalendarProps {
   userId: string;
+  selectedFieldId?: string | null;
 }
 
-export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
+export const AdminCalendar = ({ userId, selectedFieldId }: AdminCalendarProps) => {
   const { toast } = useToast();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [matches, setMatches] = useState<any[]>([]);
   const [fields, setFields] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedField, setSelectedField] = useState<string | null>(selectedFieldId || null);
+
+  useEffect(() => {
+    if (selectedFieldId) {
+      setSelectedField(selectedFieldId);
+    }
+  }, [selectedFieldId]);
 
   useEffect(() => {
     loadData();
-  }, [currentDate, userId]);
+  }, [currentDate, userId, selectedField]);
 
   const loadData = async () => {
     try {
@@ -34,7 +42,7 @@ export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(endOfWeek.getDate() + 6);
 
-      const { data: matchesData } = await supabase
+      let matchesQuery = supabase
         .from('matches')
         .select(`
           *,
@@ -43,8 +51,13 @@ export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
         `)
         .eq('fields.admin_id', userId)
         .gte('date_time', startOfWeek.toISOString())
-        .lte('date_time', endOfWeek.toISOString())
-        .order('date_time');
+        .lte('date_time', endOfWeek.toISOString());
+
+      if (selectedField) {
+        matchesQuery = matchesQuery.eq('field_id', selectedField);
+      }
+
+      const { data: matchesData } = await matchesQuery.order('date_time');
 
       if (matchesData) setMatches(matchesData);
     } catch (error) {
@@ -109,6 +122,25 @@ export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
     );
   }
 
+  // Calculate available time slots
+  const calculateAvailableSlots = () => {
+    const today = new Date();
+    const totalSlots = 16; // 6 AM to 10 PM
+    
+    if (selectedField) {
+      const todayMatches = getMatchesForDay(today).filter(match => match.field_id === selectedField);
+      return Math.max(0, totalSlots - todayMatches.length);
+    } else {
+      const todayMatches = getMatchesForDay(today);
+      const fieldsWithMatches = new Set(todayMatches.map(match => match.field_id));
+      const totalAvailableSlots = fields.reduce((total, field) => {
+        const fieldMatches = todayMatches.filter(match => match.field_id === field.id);
+        return total + Math.max(0, totalSlots - fieldMatches.length);
+      }, 0);
+      return totalAvailableSlots;
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Calendar Header */}
@@ -116,8 +148,27 @@ export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Calendar className="w-6 h-6 text-gold-premium" />
-            <h2 className="text-xl font-bold text-foreground">Calendario Semanal</h2>
+            <h2 className="text-xl font-bold text-foreground">
+              Calendario Semanal {selectedField && fields.find(f => f.id === selectedField)?.name && `- ${fields.find(f => f.id === selectedField)?.name}`}
+            </h2>
           </div>
+          
+          <div className="flex items-center gap-2">
+            <select 
+              value={selectedField || ""}
+              onChange={(e) => setSelectedField(e.target.value || null)}
+              className="px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-foreground text-sm"
+            >
+              <option value="">Todas las canchas</option>
+              {fields.map((field: any) => (
+                <option key={field.id} value={field.id}>{field.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div></div>
           
           <div className="flex items-center gap-2">
             <GlassmorphismButton
@@ -298,7 +349,7 @@ export const AdminCalendar = ({ userId }: AdminCalendarProps) => {
             <div className="p-4 rounded-2xl border border-border text-center">
               <Users className="w-8 h-8 mx-auto mb-2 text-electric-blue" />
               <div className="text-2xl font-bold text-foreground">
-                {Math.floor(Math.random() * 5) + 3}
+                {calculateAvailableSlots()}
               </div>
               <div className="text-sm text-muted-foreground">Horarios libres hoy</div>
             </div>

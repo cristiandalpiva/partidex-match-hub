@@ -154,6 +154,13 @@ export const AdminCalendar = ({ userId, selectedFieldId }: AdminCalendarProps) =
           </div>
           
           <div className="flex items-center gap-2">
+            <GlassmorphismButton
+              variant="gold"
+              size="sm"
+              onClick={() => window.location.href = '/admin/dashboard'}
+            >
+              Volver al Inicio
+            </GlassmorphismButton>
             <select 
               value={selectedField || ""}
               onChange={(e) => setSelectedField(e.target.value || null)}

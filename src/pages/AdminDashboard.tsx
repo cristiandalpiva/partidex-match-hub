@@ -198,6 +198,17 @@ const AdminDashboard = () => {
               <GlassmorphismButton
                 variant="default"
                 size="sm"
+                onClick={() => toast({
+                  title: "Próximamente",
+                  description: "La promoción de canchas estará disponible muy pronto",
+                })}
+              >
+                Promocionar Cancha
+              </GlassmorphismButton>
+
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
                 icon={LogOut}
                 onClick={handleLogout}
               >
@@ -262,6 +273,61 @@ const AdminDashboard = () => {
                   {fields.length}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">Operativas</p>
+              </div>
+            </div>
+
+            {/* Next Week's Stats */}
+            <div className="glass rounded-3xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-foreground">Resumen Semana Próxima</h2>
+                <div className="text-sm text-muted-foreground">
+                  {(() => {
+                    const nextWeek = new Date();
+                    nextWeek.setDate(nextWeek.getDate() + 7);
+                    const startNextWeek = new Date(nextWeek);
+                    startNextWeek.setDate(startNextWeek.getDate() - nextWeek.getDay() + 1);
+                    const endNextWeek = new Date(startNextWeek);
+                    endNextWeek.setDate(endNextWeek.getDate() + 6);
+                    return `${startNextWeek.toLocaleDateString('es-ES', { 
+                      day: 'numeric', 
+                      month: 'short' 
+                    })} - ${endNextWeek.toLocaleDateString('es-ES', { 
+                      day: 'numeric', 
+                      month: 'short' 
+                    })}`;
+                  })()}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="glass rounded-3xl p-6 hover-lift">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">Partidos Programados</h3>
+                    <Calendar className="w-5 h-5 text-gold-premium" />
+                  </div>
+                  <p className="text-2xl font-bold text-gold-premium">0</p>
+                  <p className="text-xs text-muted-foreground mt-1">Próxima semana</p>
+                </div>
+
+                <div className="glass rounded-3xl p-6 hover-lift">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">Canchas Disponibles</h3>
+                    <MapPin className="w-5 h-5 text-vibrant-orange" />
+                  </div>
+                  <p className="text-2xl font-bold text-vibrant-orange">{fields.length}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Operativas</p>
+                </div>
+
+                <div className="glass rounded-3xl p-6 hover-lift">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">Horarios Libres</h3>
+                    <Clock className="w-5 h-5 text-electric-blue" />
+                  </div>
+                  <p className="text-2xl font-bold text-electric-blue">
+                    {fields.length * 16 * 7}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Total semanal</p>
+                </div>
               </div>
             </div>
 

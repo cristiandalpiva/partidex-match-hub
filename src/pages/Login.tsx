@@ -46,11 +46,11 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate role selection with user feedback
-    if (!selectedRole) {
+    // Validate role selection ONLY for signup, not login
+    if (!isLogin && !selectedRole) {
       toast({
         title: "Selecciona tu rol",
-        description: "Por favor selecciona si eres Jugador o Administrador de Cancha",
+        description: "Por favor selecciona si eres Jugador o Administrador de Cancha para crear tu cuenta",
         variant: "destructive"
       });
       return;
@@ -185,18 +185,20 @@ const Login = () => {
       subtitle={isLogin ? 'Bienvenido de vuelta' : 'Únete a la comunidad'}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Role Selection - Highlight if not selected */}
-        <div className={`${!selectedRole ? 'ring-2 ring-destructive/50 rounded-xl p-2' : ''}`}>
-          <RoleSelector 
-            selectedRole={selectedRole}
-            onRoleSelect={setSelectedRole}
-          />
-          {!selectedRole && (
-            <p className="text-sm text-destructive mt-2 text-center">
-              ⚠️ Selecciona tu rol para continuar
-            </p>
-          )}
-        </div>
+        {/* Role Selection - Only required for signup */}
+        {!isLogin && (
+          <div className={`${!selectedRole ? 'ring-2 ring-destructive/50 rounded-xl p-2' : ''}`}>
+            <RoleSelector 
+              selectedRole={selectedRole}
+              onRoleSelect={setSelectedRole}
+            />
+            {!selectedRole && (
+              <p className="text-sm text-destructive mt-2 text-center">
+                ⚠️ Selecciona tu rol para crear tu cuenta
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Name Field (Register only) */}
         {!isLogin && (
@@ -270,7 +272,7 @@ const Login = () => {
           variant="gold"
           size="lg"
           className="w-full tap-scale disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!selectedRole || loading}
+          disabled={(!isLogin && !selectedRole) || loading}
         >
           {loading ? 'Procesando...' : (isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')}
         </GlassmorphismButton>

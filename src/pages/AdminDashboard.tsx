@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut } from 'lucide-react';
+import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut, CreditCard } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AdBanner } from '@/components/AdBanner';
 import { AddFieldModal } from '@/components/modals/AddFieldModal';
 import { PaymentModal } from '@/components/modals/PaymentModal';
+import { AdminPaymentConfigModal } from '@/components/modals/AdminPaymentConfigModal';
 import { AdminCalendar } from '@/components/AdminCalendar';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +25,7 @@ const AdminDashboard = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedField, setSelectedField] = useState<string | null>(null);
+  const [showAdminPaymentConfig, setShowAdminPaymentConfig] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -204,6 +206,15 @@ const AdminDashboard = () => {
                 })}
               >
                 Promocionar Cancha
+              </GlassmorphismButton>
+
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
+                icon={CreditCard}
+                onClick={() => setShowAdminPaymentConfig(true)}
+              >
+                Configurar Pagos
               </GlassmorphismButton>
 
               <GlassmorphismButton
@@ -473,6 +484,11 @@ const AdminDashboard = () => {
         onPaymentUpdated={handlePaymentUpdated}
         payment={selectedPayment}
         isAdmin={true}
+      />
+
+      <AdminPaymentConfigModal
+        isOpen={showAdminPaymentConfig}
+        onClose={() => setShowAdminPaymentConfig(false)}
       />
 
       {/* Mobile Bottom Navigation */}

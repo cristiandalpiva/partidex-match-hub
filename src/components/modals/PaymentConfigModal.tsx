@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CreditCard, DollarSign } from 'lucide-react';
+import { X, CreditCard, DollarSign, Plus, Settings } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -86,9 +86,34 @@ export const PaymentConfigModal = ({ isOpen, onClose, match }: PaymentConfigModa
                 <span className="text-sm text-green-600">Activo</span>
               </div>
             </div>
-            <GlassmorphismButton variant="default" size="sm" className="mt-3">
-              Configurar Métodos de Pago
-            </GlassmorphismButton>
+            <div className="flex gap-2 mt-3">
+              <GlassmorphismButton 
+                variant="gold" 
+                size="sm" 
+                icon={Plus}
+                onClick={() => {
+                  toast({
+                    title: "Función disponible pronto",
+                    description: "La gestión de métodos de pago estará disponible en breve.",
+                  });
+                }}
+              >
+                Agregar Método
+              </GlassmorphismButton>
+              <GlassmorphismButton 
+                variant="default" 
+                size="sm" 
+                icon={Settings}
+                onClick={() => {
+                  toast({
+                    title: "Función disponible pronto",
+                    description: "La configuración de métodos de pago estará disponible en breve.",
+                  });
+                }}
+              >
+                Configurar
+              </GlassmorphismButton>
+            </div>
           </div>
 
           {/* Completed Payments Section */}

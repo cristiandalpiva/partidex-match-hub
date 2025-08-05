@@ -1,48 +1,146 @@
-import React, { useState } from 'react';
-import { X, CreditCard, DollarSign, Plus, Settings } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, CreditCard, DollarSign, Plus, Settings, Trash2 } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PaymentConfigModalProps {
   isOpen: boolean;
   onClose: () => void;
-  match?: any;
+  userId?: string;
 }
 
-export const PaymentConfigModal = ({ isOpen, onClose, match }: PaymentConfigModalProps) => {
+export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigModalProps) => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    amount: '',
-    method: '',
-    notes: ''
-  });
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [pendingPayments, setPendingPayments] = useState([]);
+  const [completedPayments, setCompletedPayments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
+  useEffect(() => {
+    if (isOpen && userId) {
+      loadPaymentData();
+    }
+  }, [isOpen, userId]);
+
+  const loadPaymentData = async () => {
     try {
-      // Simulate payment configuration
-      setTimeout(() => {
-        toast({
-          title: "Pago configurado",
-          description: `Se configuró el pago de $${formData.amount} para el partido.`,
-        });
-        onClose();
-        setFormData({ amount: '', method: '', notes: '' });
-        setLoading(false);
-      }, 1000);
+      setLoading(true);
+      
+      // Load payment methods
+      const { data: methods } = await supabase
+        .from('payment_methods')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      
+      if (methods) setPaymentMethods(methods);
+
+      // Load payments
+      const { data: payments } = await supabase
+        .from('payments')
+        .select(`
+          *,
+          matches(
+            id,
+            date_time,
+            fields(name, location),
+            teams(name)
+          )
+        `)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      
+      if (payments) {
+        setPendingPayments(payments.filter(p => p.status === 'pending'));
+        setCompletedPayments(payments.filter(p => p.status === 'paid'));
+      }
+    } catch (error) {
+      console.error('Error loading payment data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddPaymentMethod = async () => {
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase.functions.invoke('create-setup-intent', {
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      // In a real implementation, you would use Stripe Elements here
+      toast({
+        title: "Función disponible pronto",
+        description: "La integración completa con Stripe estará disponible en breve.",
+      });
     } catch (error) {
       toast({
         title: "Error",
-        description: "No se pudo configurar el pago.",
+        description: "No se pudo agregar el método de pago.",
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeletePaymentMethod = async (methodId: string) => {
+    try {
+      const { error } = await supabase
+        .from('payment_methods')
+        .delete()
+        .eq('id', methodId)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Método eliminado",
+        description: "El método de pago fue eliminado exitosamente.",
+      });
+      
+      loadPaymentData();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el método de pago.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handlePayPendingPayment = async (paymentId: string, amount: number) => {
+    try {
+      if (paymentMethods.length === 0) {
+        toast({
+          title: "Sin métodos de pago",
+          description: "Primero debes agregar un método de pago.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // In a real implementation, this would process the payment through Stripe
+      toast({
+        title: "Función disponible pronto",
+        description: "El procesamiento de pagos estará disponible en breve.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo procesar el pago.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -69,49 +167,51 @@ export const PaymentConfigModal = ({ isOpen, onClose, match }: PaymentConfigModa
         <div className="space-y-6">
           {/* Payment Methods Section */}
           <div className="glass rounded-2xl p-4">
-            <h3 className="font-semibold text-foreground mb-3">Métodos de Pago Configurados</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                <div className="flex items-center gap-3">
-                  <CreditCard className="w-5 h-5 text-muted-foreground" />
-                  <span className="font-medium">Tarjeta terminada en ****4567</span>
-                </div>
-                <span className="text-sm text-green-600">Activo</span>
+            <h3 className="font-semibold text-foreground mb-3">Métodos de Pago</h3>
+            {paymentMethods.length > 0 ? (
+              <div className="space-y-3">
+                {paymentMethods.map((method: any) => (
+                  <div key={method.id} className="flex items-center justify-between p-3 rounded-lg border border-border">
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="w-5 h-5 text-muted-foreground" />
+                      <div>
+                        <span className="font-medium capitalize">{method.brand} terminada en ****{method.last4}</span>
+                        <p className="text-sm text-muted-foreground">
+                          Expira {method.exp_month.toString().padStart(2, '0')}/{method.exp_year}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {method.is_default && (
+                        <span className="text-xs bg-green-dynamic/20 text-green-dynamic px-2 py-1 rounded-full">
+                          Predeterminado
+                        </span>
+                      )}
+                      <GlassmorphismButton
+                        variant="default"
+                        size="sm"
+                        icon={Trash2}
+                        onClick={() => handleDeletePaymentMethod(method.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        Eliminar
+                      </GlassmorphismButton>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg border border-border">
-                <div className="flex items-center gap-3">
-                  <DollarSign className="w-5 h-5 text-muted-foreground" />
-                  <span className="font-medium">MercadoPago</span>
-                </div>
-                <span className="text-sm text-green-600">Activo</span>
-              </div>
-            </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-4">No tienes métodos de pago configurados</p>
+            )}
             <div className="flex gap-2 mt-3">
               <GlassmorphismButton 
                 variant="gold" 
                 size="sm" 
                 icon={Plus}
-                onClick={() => {
-                  toast({
-                    title: "Función disponible pronto",
-                    description: "La gestión de métodos de pago estará disponible en breve.",
-                  });
-                }}
+                onClick={handleAddPaymentMethod}
+                disabled={loading}
               >
-                Agregar Método
-              </GlassmorphismButton>
-              <GlassmorphismButton 
-                variant="default" 
-                size="sm" 
-                icon={Settings}
-                onClick={() => {
-                  toast({
-                    title: "Función disponible pronto",
-                    description: "La configuración de métodos de pago estará disponible en breve.",
-                  });
-                }}
-              >
-                Configurar
+                Agregar Tarjeta
               </GlassmorphismButton>
             </div>
           </div>
@@ -119,48 +219,68 @@ export const PaymentConfigModal = ({ isOpen, onClose, match }: PaymentConfigModa
           {/* Completed Payments Section */}
           <div className="glass rounded-2xl p-4">
             <h3 className="font-semibold text-foreground mb-3">Pagos Realizados</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
-                <div>
-                  <p className="font-medium text-foreground">Partido en Cancha Central</p>
-                  <p className="text-sm text-muted-foreground">15 de Enero, 2024</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-green-600">$2,500</p>
-                  <p className="text-sm text-green-600">Pagado</p>
-                </div>
+            {completedPayments.length > 0 ? (
+              <div className="space-y-3">
+                {completedPayments.map((payment: any) => (
+                  <div key={payment.id} className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
+                    <div>
+                      <p className="font-medium text-foreground">
+                        {payment.matches?.teams?.name || 'Partido'} - {payment.matches?.fields?.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(payment.paid_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-green-600">${payment.amount}</p>
+                      <p className="text-sm text-green-600">Pagado</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 border border-green-200">
-                <div>
-                  <p className="font-medium text-foreground">Partido en Club Atlético</p>
-                  <p className="text-sm text-muted-foreground">8 de Enero, 2024</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-green-600">$3,000</p>
-                  <p className="text-sm text-green-600">Pagado</p>
-                </div>
-              </div>
-            </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-4">No tienes pagos realizados</p>
+            )}
           </div>
 
           {/* Pending Payments Section */}
           <div className="glass rounded-2xl p-4">
             <h3 className="font-semibold text-foreground mb-3">Pagos Pendientes</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50 border border-yellow-200">
-                <div>
-                  <p className="font-medium text-foreground">Partido en Estadio Norte</p>
-                  <p className="text-sm text-muted-foreground">22 de Enero, 2024</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-yellow-600">$2,800</p>
-                  <p className="text-sm text-yellow-600">Pendiente</p>
-                </div>
+            {pendingPayments.length > 0 ? (
+              <div className="space-y-3">
+                {pendingPayments.map((payment: any) => (
+                  <div key={payment.id} className="flex items-center justify-between p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+                    <div>
+                      <p className="font-medium text-foreground">
+                        {payment.matches?.teams?.name || 'Partido'} - {payment.matches?.fields?.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(payment.matches?.date_time).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right flex items-center gap-2">
+                      <div>
+                        <p className="font-semibold text-yellow-600">${payment.amount}</p>
+                        <p className="text-sm text-yellow-600">Pendiente</p>
+                      </div>
+                      <GlassmorphismButton
+                        variant="gold"
+                        size="sm"
+                        onClick={() => handlePayPendingPayment(payment.id, payment.amount)}
+                        disabled={loading}
+                      >
+                        Pagar
+                      </GlassmorphismButton>
+                    </div>
+                  </div>
+                ))}
+                <p className="text-sm text-muted-foreground mt-3">
+                  Tienes {pendingPayments.length} pago{pendingPayments.length !== 1 ? 's' : ''} pendiente{pendingPayments.length !== 1 ? 's' : ''} por un total de ${pendingPayments.reduce((sum: number, p: any) => sum + p.amount, 0)}
+                </p>
               </div>
-            </div>
-            <p className="text-sm text-muted-foreground mt-3">
-              Tienes 1 pago pendiente por un total de $2,800
-            </p>
+            ) : (
+              <p className="text-muted-foreground text-center py-4">No tienes pagos pendientes</p>
+            )}
           </div>
 
           <div className="flex gap-3 pt-4">

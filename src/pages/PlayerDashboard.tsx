@@ -325,7 +325,7 @@ const PlayerDashboard = () => {
                     className="w-full justify-start"
                     onClick={() => setShowPaymentConfig(true)}
                   >
-                    Ver Pagos
+                    Gestionar Pagos
                   </GlassmorphismButton>
                 </div>
               </div>
@@ -389,13 +389,13 @@ const PlayerDashboard = () => {
                           
                           <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
                             {/* Attendance buttons */}
-                            <div className="flex items-center gap-1">
+                             <div className="flex items-center gap-1">
                               <GlassmorphismButton
                                 variant={attendanceStatus === 'confirmed' ? 'green' : 'default'}
                                 size="sm"
                                 icon={Check}
                                 onClick={() => handleAttendanceChange(match.id, 'confirmed')}
-                                className={`text-xs px-2 py-1 ${attendanceStatus === 'confirmed' ? 'bg-green-dynamic text-black-deep' : ''}`}
+                                className={`text-xs px-2 py-1 ${attendanceStatus === 'confirmed' ? 'bg-green-dynamic/80 text-black-deep border-green-dynamic' : 'text-black-deep bg-gray-100 border-gray-300'}`}
                               >
                                 Asistiré
                               </GlassmorphismButton>
@@ -404,7 +404,7 @@ const PlayerDashboard = () => {
                                 size="sm"
                                 icon={X}
                                 onClick={() => handleAttendanceChange(match.id, 'declined')}
-                                className={`text-xs px-2 py-1 ${attendanceStatus === 'declined' ? 'bg-green-dynamic text-black-deep' : ''}`}
+                                className={`text-xs px-2 py-1 ${attendanceStatus === 'declined' ? 'bg-red-500/80 text-black-deep border-red-500' : 'text-black-deep bg-gray-100 border-gray-300'}`}
                               >
                                 No asistiré
                               </GlassmorphismButton>
@@ -412,7 +412,7 @@ const PlayerDashboard = () => {
                                 variant="default"
                                 size="sm"
                                 onClick={() => handleAttendanceChange(match.id, 'maybe')}
-                                className={`text-xs px-2 py-1 ${attendanceStatus === 'maybe' ? 'bg-green-dynamic text-black-deep' : ''}`}
+                                className={`text-xs px-2 py-1 ${attendanceStatus === 'maybe' ? 'bg-yellow-500/80 text-black-deep border-yellow-500' : 'text-black-deep bg-gray-100 border-gray-300'}`}
                               >
                                 Quizás
                               </GlassmorphismButton>
@@ -441,14 +441,6 @@ const PlayerDashboard = () => {
                   onAction={handleCreateMatch}
                 />
               )}
-            </div>
-
-            {/* Advertising Banner */}
-            <div className="space-y-4">
-              <AdBanner 
-                location="dashboard" 
-                className="rounded-2xl h-32 object-cover"
-              />
             </div>
 
             {/* My Teams */}
@@ -494,6 +486,14 @@ const PlayerDashboard = () => {
                 />
               )}
             </div>
+
+            {/* Advertising Banner */}
+            <div className="mt-8">
+              <AdBanner 
+                location="dashboard" 
+                className="rounded-2xl h-[150px] object-cover"
+              />
+            </div>
           </div>
         )}
       </main>
@@ -523,6 +523,7 @@ const PlayerDashboard = () => {
       <PaymentConfigModal
         isOpen={showPaymentConfig}
         onClose={() => setShowPaymentConfig(false)}
+        userId={user?.id}
       />
 
       <MatchDetailsModal

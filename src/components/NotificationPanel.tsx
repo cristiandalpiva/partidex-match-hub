@@ -38,56 +38,9 @@ export const NotificationPanel = ({ isOpen, onClose, userId }: NotificationPanel
   const loadNotifications = async () => {
     setLoading(true);
     try {
-      // Simulated notifications - In real app, this would come from database
-      const mockNotifications: Notification[] = [
-        {
-          id: '1',
-          type: 'match_reminder',
-          title: 'Recordatorio de Partido',
-          message: 'Tu partido en Cancha Central es mañana a las 19:00. ¡No olvides confirmar tu asistencia!',
-          read: false,
-          created_at: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
-          priority: 'high'
-        },
-        {
-          id: '2',
-          type: 'payment_confirmation',
-          title: 'Pago Confirmado',
-          message: 'Tu pago de $2,500 para el partido del 15 de enero ha sido procesado exitosamente.',
-          read: false,
-          created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-          priority: 'medium'
-        },
-        {
-          id: '3',
-          type: 'team_update',
-          title: 'Actualización del Equipo',
-          message: 'Se agregó un nuevo jugador al equipo "Los Tigres". ¡Dale la bienvenida!',
-          read: true,
-          created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
-          priority: 'low'
-        },
-        {
-          id: '4',
-          type: 'payment_reminder',
-          title: 'Pago Pendiente',
-          message: 'Tienes un pago pendiente de $2,800 para el partido del 22 de enero.',
-          read: false,
-          created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2 days ago
-          priority: 'high'
-        },
-        {
-          id: '5',
-          type: 'match_reminder',
-          title: 'Cambio de Horario',
-          message: 'El partido del sábado se movió de 16:00 a 18:00. Revisa los detalles.',
-          read: true,
-          created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(), // 3 days ago
-          priority: 'medium'
-        }
-      ];
-
-      setNotifications(mockNotifications);
+      // Since we don't have a notifications table yet, show empty state
+      // In a real implementation, you would create a notifications table
+      setNotifications([]);
     } catch (error) {
       console.error('Error loading notifications:', error);
       toast({

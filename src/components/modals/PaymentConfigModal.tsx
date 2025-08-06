@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { X, CreditCard, DollarSign, Plus, Settings, Trash2 } from 'lucide-react';
+import { X, CreditCard, DollarSign, Plus, Settings, Trash2, Wallet } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { MercadoPagoIntegration } from '@/components/MercadoPagoIntegration';
 
 interface PaymentConfigModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigMod
   const [completedPayments, setCompletedPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddCard, setShowAddCard] = useState(false);
+  const [showMercadoPago, setShowMercadoPago] = useState(false);
 
   useEffect(() => {
     if (isOpen && userId) {
@@ -201,17 +203,29 @@ export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigMod
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground text-center py-4">No tienes métodos de pago configurados</p>
+              <div className="text-center py-4">
+                <p className="text-muted-foreground mb-4">No tienes métodos de pago configurados</p>
+                <p className="text-sm text-muted-foreground">Agrega un método de pago para poder realizar reservas</p>
+              </div>
             )}
-            <div className="flex gap-2 mt-3">
+            <div className="grid grid-cols-2 gap-2 mt-3">
               <GlassmorphismButton 
-                variant="gold" 
+                variant="green" 
                 size="sm" 
                 icon={Plus}
                 onClick={handleAddPaymentMethod}
                 disabled={loading}
               >
                 Agregar Tarjeta
+              </GlassmorphismButton>
+              <GlassmorphismButton 
+                variant="default" 
+                size="sm" 
+                icon={Wallet}
+                onClick={() => setShowMercadoPago(true)}
+                disabled={loading}
+              >
+                MercadoPago
               </GlassmorphismButton>
             </div>
           </div>
@@ -282,6 +296,49 @@ export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigMod
               <p className="text-muted-foreground text-center py-4">No tienes pagos pendientes</p>
             )}
           </div>
+
+          {/* MercadoPago Integration */}
+          {showMercadoPago && (
+            <div className="glass rounded-2xl p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-foreground">Configurar MercadoPago</h3>
+                <button
+                  onClick={() => setShowMercadoPago(false)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg border border-border bg-muted/20">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                      <Wallet className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">MercadoPago</h3>
+                      <p className="text-xs text-muted-foreground">Método de pago popular en Argentina</p>
+                    </div>
+                  </div>
+                  
+                  <GlassmorphismButton
+                    variant="green"
+                    className="w-full"
+                    onClick={() => {
+                      toast({
+                        title: "Integración en desarrollo",
+                        description: "La integración con MercadoPago estará disponible pronto.",
+                      });
+                      setShowMercadoPago(false);
+                    }}
+                    icon={Wallet}
+                  >
+                    Configurar MercadoPago
+                  </GlassmorphismButton>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-4">
             <GlassmorphismButton

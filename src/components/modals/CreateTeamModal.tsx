@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { X, Users, Mail, UserPlus } from 'lucide-react';
+import { X, Users, Mail, UserPlus, Share2 } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { ShareTeamModal } from './ShareTeamModal';
 
 interface CreateTeamModalProps {
   isOpen: boolean;
@@ -21,6 +22,9 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
     memberEmails: [''],
     inviteCode: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [createdTeam, setCreatedTeam] = useState<any>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Generate invite code when modal opens
   React.useEffect(() => {
@@ -29,7 +33,6 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
       setFormData(prev => ({ ...prev, inviteCode: code }));
     }
   }, [isOpen]);
-  const [loading, setLoading] = useState(false);
 
   const handleAddEmail = () => {
     setFormData(prev => ({
@@ -96,14 +99,18 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
         }
       }
 
+      setCreatedTeam({
+        ...team,
+        inviteCode: formData.inviteCode
+      });
+
       toast({
         title: "¡Equipo creado!",
         description: `${formData.name} ha sido creado exitosamente.`,
       });
 
       onTeamCreated();
-      onClose();
-      setFormData({ name: '', memberEmails: [''], inviteCode: '' });
+      setShowShareModal(true);
     } catch (error) {
       console.error('Error creating team:', error);
       toast({
@@ -217,6 +224,19 @@ export const CreateTeamModal = ({ isOpen, onClose, onTeamCreated, userId }: Crea
           </div>
         </form>
       </div>
+      
+      {createdTeam && (
+        <ShareTeamModal
+          isOpen={showShareModal}
+          onClose={() => {
+            setShowShareModal(false);
+            onClose();
+            setFormData({ name: '', memberEmails: [''], inviteCode: '' });
+            setCreatedTeam(null);
+          }}
+          team={createdTeam}
+        />
+      )}
     </div>
   );
 };

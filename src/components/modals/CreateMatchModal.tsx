@@ -290,7 +290,7 @@ export const CreateMatchModal = ({ isOpen, onClose, onMatchCreated, userId }: Cr
             <GlassmorphismButton
               type="submit"
               variant="green"
-              className="flex-1"
+              className="flex-1 text-black-deep"
               disabled={loading || !formData.team_id || !formData.field_id || !formData.date || !formData.time || !formData.gender_type || !formData.player_count}
               icon={loading ? undefined : Calendar}
             >

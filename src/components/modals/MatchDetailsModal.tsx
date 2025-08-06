@@ -219,24 +219,24 @@ export const MatchDetailsModal = ({ isOpen, onClose, match }: MatchDetailsModalP
             <div className="glass rounded-2xl p-4">
               <h3 className="font-semibold text-foreground mb-3">Mi Asistencia</h3>
               <div className="grid grid-cols-3 gap-2 mb-4">
-                {[
-                  { value: 'confirmed', label: 'Asistiré', emoji: '✅' },
-                  { value: 'maybe', label: 'Quizás', emoji: '❓' },
-                  { value: 'declined', label: 'No asistiré', emoji: '❌' }
-                ].map(option => (
-                  <button
-                    key={option.value}
-                    onClick={() => updateAttendance(option.value)}
-                    className={`p-3 rounded-lg border transition-all ${
-                      userAttendance?.status === option.value
-                        ? 'bg-green-dynamic text-black-deep border-green-dynamic font-medium'
-                        : 'border-border hover:bg-muted/50 text-foreground'
-                    }`}
-                  >
-                    <div className="text-lg mb-1">{option.emoji}</div>
-                    <div className="text-xs">{option.label}</div>
-                  </button>
-                ))}
+                 {[
+                   { value: 'confirmed', label: 'Asistiré', emoji: '✅' },
+                   { value: 'maybe', label: 'Quizás', emoji: '❓' },
+                   { value: 'declined', label: 'No asistiré', emoji: '❌' }
+                 ].map(option => (
+                   <button
+                     key={option.value}
+                     onClick={() => updateAttendance(option.value)}
+                     className={`p-3 rounded-lg border transition-all ${
+                       userAttendance?.status === option.value
+                         ? 'bg-green-dynamic text-black-deep border-green-dynamic font-medium'
+                         : 'border-border hover:bg-muted/50 text-foreground'
+                     }`}
+                   >
+                     <div className="text-lg mb-1">{option.emoji}</div>
+                     <div className="text-xs text-black-deep">{option.label}</div>
+                   </button>
+                 ))}
               </div>
             </div>
           )}
@@ -253,7 +253,7 @@ export const MatchDetailsModal = ({ isOpen, onClose, match }: MatchDetailsModalP
             </GlassmorphismButton>
             <GlassmorphismButton
               variant="default"
-              className="flex-1"
+              className="flex-1 text-black-deep"
               onClick={onClose}
             >
               Cerrar

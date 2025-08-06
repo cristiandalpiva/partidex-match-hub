@@ -245,7 +245,7 @@ export const MatchDetailsModal = ({ isOpen, onClose, match }: MatchDetailsModalP
           <div className="flex gap-3">
             <GlassmorphismButton
               variant="green"
-              className="flex-1 flex items-center gap-2"
+              className="flex-1 flex items-center gap-2 text-black-deep"
               onClick={() => setShowShareModal(true)}
             >
               <Share2 className="w-4 h-4" />

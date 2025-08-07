@@ -27,8 +27,8 @@ export const GlassmorphismButton = ({
   
   const variantClasses = {
     gold: 'bg-gradient-to-r from-gold-premium to-gold-premium-light text-black-deep shadow-gold hover:shadow-xl',
-    green: 'bg-gradient-to-r from-green-dynamic to-green-dynamic-dark text-secondary-foreground shadow-green hover:shadow-xl',
-    default: 'text-foreground hover:bg-white/10'
+    green: 'bg-gradient-to-r from-green-dynamic to-green-dynamic-dark text-black-deep shadow-green hover:shadow-xl',
+    default: 'bg-white/10 text-black-deep border border-white/20 hover:bg-white/20 shadow-lg'
   };
 
   const sizeClasses = {

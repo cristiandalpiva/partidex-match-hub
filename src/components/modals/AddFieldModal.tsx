@@ -155,14 +155,14 @@ export const AddFieldModal = ({ isOpen, onClose, onFieldAdded, userId }: AddFiel
           <div className="flex gap-3 pt-4">
             <button
               type="button"
-              className="flex-1 px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-muted border-2 border-border text-foreground rounded-xl hover:bg-muted/80 transition-colors font-medium"
               onClick={onClose}
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-white border-2 border-gold-premium text-gray-900 rounded-xl hover:bg-gold-premium/5 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-gold-premium border-2 border-gold-premium text-black-deep rounded-xl hover:bg-gold-premium/90 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-gold"
               disabled={loading || !formData.name.trim() || !formData.location.trim() || !formData.price}
             >
               {loading ? (

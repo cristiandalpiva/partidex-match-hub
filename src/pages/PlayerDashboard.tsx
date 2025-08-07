@@ -549,7 +549,7 @@ const PlayerDashboard = () => {
       />
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 glass border-t border-white/10 lg:hidden z-50">
+      <nav className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-lg border-t border-white/10 lg:hidden z-50">
         <div className="flex items-center justify-around py-2 px-2">
           {[
             { id: 'dashboard', icon: Trophy, label: 'Inicio', action: () => setActiveTab('dashboard') },
@@ -562,8 +562,8 @@ const PlayerDashboard = () => {
               onClick={tab.action}
               className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-colors ${
                 (activeTab === tab.id || (tab.id === 'profile' && showProfile))
-                  ? 'text-gold-premium'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-gold-premium text-black-deep shadow-gold'
+                  : 'text-foreground hover:text-foreground hover:bg-muted/20'
               }`}
             >
               <tab.icon className="w-4 h-4 sm:w-5 sm:h-5" />

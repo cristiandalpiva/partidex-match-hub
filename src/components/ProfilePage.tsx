@@ -10,6 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { PaymentConfigModal } from '@/components/modals/PaymentConfigModal';
+import { FileUpload } from '@/components/ui/file-upload';
 
 interface ProfilePageProps {
   userId: string;
@@ -44,10 +46,8 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
   });
 
   const [matchHistory, setMatchHistory] = useState([]);
-  const [paymentMethods, setPaymentMethods] = useState([
-    { id: 1, type: 'MercadoPago', status: 'active', details: '****4567' },
-    { id: 2, type: 'Tarjeta Débito', status: 'active', details: '****8901' }
-  ]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [showPaymentConfig, setShowPaymentConfig] = useState(false);
 
   useEffect(() => {
     loadProfileData();
@@ -115,11 +115,19 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
         }));
       }
 
-      // Load payment stats
+      // Load payment stats and methods
       const { data: paymentData } = await supabase
         .from('payments')
         .select('*')
         .eq('user_id', userId);
+
+      const { data: methodsData } = await supabase
+        .from('payment_methods')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (methodsData) setPaymentMethods(methodsData);
 
       if (paymentData) {
         const totalPayments = paymentData.length;
@@ -248,12 +256,25 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
                         placeholder="Nombre completo"
                         className="text-lg font-bold"
                       />
-                      <Input
-                        value={formData.avatar_url}
-                        onChange={(e) => setFormData(prev => ({ ...prev, avatar_url: e.target.value }))}
-                        placeholder="URL de la foto de perfil"
-                        className="text-sm"
-                      />
+                      <div className="space-y-2">
+                        <Label htmlFor="avatar">Foto de perfil</Label>
+                        <FileUpload
+                          onFileSelect={(file) => {
+                            // In a real implementation, you would upload to Supabase Storage
+                            const url = URL.createObjectURL(file);
+                            setFormData(prev => ({ ...prev, avatar_url: url }));
+                            toast({
+                              title: "Función disponible pronto",
+                              description: "La subida de archivos estará disponible en breve.",
+                            });
+                          }}
+                          onUrlChange={(url) => setFormData(prev => ({ ...prev, avatar_url: url }))}
+                          currentUrl={formData.avatar_url}
+                          accept="image/*"
+                          maxSize={5}
+                          placeholder="Seleccionar foto o ingresar URL"
+                        />
+                      </div>
                     </div>
                   ) : (
                     <>
@@ -405,24 +426,36 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
               Métodos de Pago
             </h3>
             
-            <div className="space-y-3">
-              {paymentMethods.map((method) => (
-                <div key={method.id} className="flex items-center justify-between p-3 rounded-lg border border-border">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium text-foreground">{method.type}</p>
-                      <p className="text-sm text-muted-foreground">{method.details}</p>
+            {paymentMethods.length > 0 ? (
+              <div className="space-y-3">
+                {paymentMethods.map((method: any) => (
+                  <div key={method.id} className="flex items-center justify-between p-3 rounded-lg border border-border">
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="w-5 h-5 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium text-foreground capitalize">{method.brand} terminada en ****{method.last4}</p>
+                        <p className="text-sm text-muted-foreground">Expira {method.exp_month?.toString().padStart(2, '0')}/{method.exp_year}</p>
+                      </div>
                     </div>
+                    <Badge variant={method.is_default ? 'default' : 'secondary'}>
+                      {method.is_default ? 'Predeterminado' : 'Guardado'}
+                    </Badge>
                   </div>
-                  <Badge variant={method.status === 'active' ? 'default' : 'secondary'}>
-                    {method.status === 'active' ? 'Activo' : 'Inactivo'}
-                  </Badge>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <p className="text-muted-foreground mb-2">No hay métodos de pago configurados</p>
+                <p className="text-sm text-muted-foreground">Agrega un método de pago para realizar reservas más fácilmente</p>
+              </div>
+            )}
             
-            <GlassmorphismButton variant="default" size="sm" className="mt-4">
+            <GlassmorphismButton 
+              variant="default" 
+              size="sm" 
+              className="mt-4"
+              onClick={() => setShowPaymentConfig(true)}
+            >
               Gestionar Métodos de Pago
             </GlassmorphismButton>
           </div>
@@ -481,6 +514,14 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
           )}
         </div>
       </main>
+
+      {/* Payment Config Modal */}
+      <PaymentConfigModal
+        isOpen={showPaymentConfig}
+        onClose={() => setShowPaymentConfig(false)}
+        userId={userId}
+        onUpdate={loadProfileData}
+      />
     </div>
   );
 };

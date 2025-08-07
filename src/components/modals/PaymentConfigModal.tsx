@@ -12,9 +12,10 @@ interface PaymentConfigModalProps {
   isOpen: boolean;
   onClose: () => void;
   userId?: string;
+  onUpdate?: () => void;
 }
 
-export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigModalProps) => {
+export const PaymentConfigModal = ({ isOpen, onClose, userId, onUpdate }: PaymentConfigModalProps) => {
   const { toast } = useToast();
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [pendingPayments, setPendingPayments] = useState([]);
@@ -112,6 +113,7 @@ export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigMod
       });
       
       loadPaymentData();
+      if (onUpdate) onUpdate();
     } catch (error) {
       toast({
         title: "Error",
@@ -146,11 +148,16 @@ export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigMod
     }
   };
 
+  const handleClose = () => {
+    onClose();
+    if (onUpdate) onUpdate();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-background rounded-3xl p-6 w-full max-w-2xl shadow-xl border" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4" onClick={handleClose}>
+      <div className="bg-background rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl border" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-green-dynamic to-green-dynamic-dark rounded-xl flex items-center justify-center">
@@ -159,7 +166,7 @@ export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigMod
             <h2 className="text-xl font-bold text-foreground">Dashboard de Pagos</h2>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
           >
             <X className="w-5 h-5 text-muted-foreground" />
@@ -344,7 +351,7 @@ export const PaymentConfigModal = ({ isOpen, onClose, userId }: PaymentConfigMod
             <GlassmorphismButton
               variant="default"
               className="flex-1"
-              onClick={onClose}
+              onClick={handleClose}
             >
               Cerrar
             </GlassmorphismButton>

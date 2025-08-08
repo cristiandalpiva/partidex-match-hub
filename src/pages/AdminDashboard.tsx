@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut, CreditCard } from 'lucide-react';
+import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut, CreditCard, Menu } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AdBanner } from '@/components/AdBanner';
@@ -9,6 +9,7 @@ import { PaymentModal } from '@/components/modals/PaymentModal';
 import { AdminPaymentConfigModal } from '@/components/modals/AdminPaymentConfigModal';
 import { AdminCalendar } from '@/components/AdminCalendar';
 import { supabase } from '@/integrations/supabase/client';
+import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedField, setSelectedField] = useState<string | null>(null);
   const [showAdminPaymentConfig, setShowAdminPaymentConfig] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -179,52 +181,116 @@ const AdminDashboard = () => {
             </div>
             
             <div className="flex items-center gap-2">
-              <GlassmorphismButton
-                variant="gold"
-                size="sm"
-                icon={MapPin}
-                onClick={handleAddField}
-              >
-                Nueva Cancha
-              </GlassmorphismButton>
-              
-              <GlassmorphismButton
-                variant="gold"
-                size="sm"
-                icon={Calendar}
-                onClick={() => setActiveTab('calendar')}
-              >
-                Ver Agenda
-              </GlassmorphismButton>
+              {/* Menú hamburguesa (móvil y tablet) */}
+              <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+                <SheetTrigger asChild>
+                  <button
+                    aria-label="Abrir menú"
+                    className="lg:hidden p-2 rounded-xl bg-muted border border-border text-foreground"
+                  >
+                    <Menu className="w-5 h-5" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[18rem] p-0">
+                  <div className="p-4 space-y-2">
+                    <h2 className="text-lg font-bold text-foreground mb-2">Menú</h2>
+                    <GlassmorphismButton
+                      variant="gold"
+                      size="sm"
+                      icon={MapPin}
+                      className="w-full justify-start"
+                      onClick={() => { handleAddField(); setMenuOpen(false); }}
+                    >
+                      Nueva Cancha
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="gold"
+                      size="sm"
+                      icon={Calendar}
+                      className="w-full justify-start"
+                      onClick={() => { setActiveTab('calendar'); setMenuOpen(false); }}
+                    >
+                      Ver Agenda
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="default"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => { toast({ title: "Próximamente", description: "La promoción de canchas estará disponible muy pronto", }); setMenuOpen(false); }}
+                    >
+                      Promocionar Cancha
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="default"
+                      size="sm"
+                      icon={CreditCard}
+                      className="w-full justify-start"
+                      onClick={() => { setShowAdminPaymentConfig(true); setMenuOpen(false); }}
+                    >
+                      Configurar Pagos
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="default"
+                      size="sm"
+                      icon={LogOut}
+                      className="w-full justify-start"
+                      onClick={() => { handleLogout(); setMenuOpen(false); }}
+                    >
+                      Salir
+                    </GlassmorphismButton>
+                  </div>
+                </SheetContent>
+              </Sheet>
 
-              <GlassmorphismButton
-                variant="default"
-                size="sm"
-                onClick={() => toast({
-                  title: "Próximamente",
-                  description: "La promoción de canchas estará disponible muy pronto",
-                })}
-              >
-                Promocionar Cancha
-              </GlassmorphismButton>
+              {/* Acciones escritorio */}
+              <div className="hidden lg:flex items-center gap-2">
+                <GlassmorphismButton
+                  variant="gold"
+                  size="sm"
+                  icon={MapPin}
+                  onClick={handleAddField}
+                >
+                  Nueva Cancha
+                </GlassmorphismButton>
+                
+                <GlassmorphismButton
+                  variant="gold"
+                  size="sm"
+                  icon={Calendar}
+                  onClick={() => setActiveTab('calendar')}
+                >
+                  Ver Agenda
+                </GlassmorphismButton>
 
-              <GlassmorphismButton
-                variant="default"
-                size="sm"
-                icon={CreditCard}
-                onClick={() => setShowAdminPaymentConfig(true)}
-              >
-                Configurar Pagos
-              </GlassmorphismButton>
+                <GlassmorphismButton
+                  variant="default"
+                  size="sm"
+                  onClick={() => toast({
+                    title: "Próximamente",
+                    description: "La promoción de canchas estará disponible muy pronto",
+                  })}
+                >
+                  Promocionar Cancha
+                </GlassmorphismButton>
 
-              <GlassmorphismButton
-                variant="default"
-                size="sm"
-                icon={LogOut}
-                onClick={handleLogout}
-              >
-                Salir
-              </GlassmorphismButton>
+                <GlassmorphismButton
+                  variant="default"
+                  size="sm"
+                  icon={CreditCard}
+                  onClick={() => setShowAdminPaymentConfig(true)}
+                >
+                  Configurar Pagos
+                </GlassmorphismButton>
+
+                <GlassmorphismButton
+                  variant="default"
+                  size="sm"
+                  icon={LogOut}
+                  onClick={handleLogout}
+                >
+                  Salir
+                </GlassmorphismButton>
+              </div>
             </div>
           </div>
         </div>

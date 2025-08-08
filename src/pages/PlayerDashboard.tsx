@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut, Check, X, Bell, User } from 'lucide-react';
+import { Plus, Calendar, Trophy, CreditCard, Users, MapPin, LogOut, Check, X, Bell, User, Menu } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { ScoreRing } from '@/components/ui/score-ring';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -14,6 +14,7 @@ import { OnboardingFlow } from '@/components/OnboardingFlow';
 import { NotificationPanel } from '@/components/NotificationPanel';
 import { ProfilePage } from '@/components/ProfilePage';
 import { supabase } from '@/integrations/supabase/client';
+import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
@@ -36,6 +37,7 @@ const PlayerDashboard = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -196,6 +198,78 @@ const PlayerDashboard = () => {
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2">
+              {/* Menú hamburguesa (móvil y tablet) */}
+              <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+                <SheetTrigger asChild>
+                  <button
+                    aria-label="Abrir menú"
+                    className="lg:hidden p-2 rounded-xl bg-muted border border-border text-foreground"
+                  >
+                    <Menu className="w-5 h-5" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[18rem] p-0">
+                  <div className="p-4 space-y-2">
+                    <h2 className="text-lg font-bold text-foreground mb-2">Menú</h2>
+                    <GlassmorphismButton
+                      variant="default"
+                      size="sm"
+                      icon={Bell}
+                      className="w-full justify-start"
+                      onClick={() => { setShowNotifications(true); setMenuOpen(false); }}
+                    >
+                      Notificaciones
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="default"
+                      size="sm"
+                      icon={User}
+                      className="w-full justify-start"
+                      onClick={() => { setShowProfile(true); setMenuOpen(false); }}
+                    >
+                      Perfil
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="gold"
+                      size="sm"
+                      icon={Plus}
+                      className="w-full justify-start"
+                      onClick={() => { handleCreateMatch(); setMenuOpen(false); }}
+                    >
+                      Crear Partido
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="gold"
+                      size="sm"
+                      icon={Users}
+                      className="w-full justify-start"
+                      onClick={() => { handleCreateTeam(); setMenuOpen(false); }}
+                    >
+                      Crear Equipo
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="default"
+                      size="sm"
+                      icon={CreditCard}
+                      className="w-full justify-start"
+                      onClick={() => { setShowPaymentConfig(true); setMenuOpen(false); }}
+                    >
+                      Gestionar Pagos
+                    </GlassmorphismButton>
+                    <GlassmorphismButton
+                      variant="default"
+                      size="sm"
+                      icon={LogOut}
+                      className="w-full justify-start"
+                      onClick={() => { handleLogout(); setMenuOpen(false); }}
+                    >
+                      Salir
+                    </GlassmorphismButton>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
+              {/* Acciones escritorio */}
               <GlassmorphismButton
                 variant="default"
                 size="sm"

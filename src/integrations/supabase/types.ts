@@ -78,7 +78,9 @@ export type Database = {
       }
       fields: {
         Row: {
+          address: string | null
           admin_id: string
+          city: string | null
           created_at: string
           id: string
           location: string
@@ -87,7 +89,9 @@ export type Database = {
           price: number
         }
         Insert: {
+          address?: string | null
           admin_id: string
+          city?: string | null
           created_at?: string
           id?: string
           location: string
@@ -96,7 +100,9 @@ export type Database = {
           price: number
         }
         Update: {
+          address?: string | null
           admin_id?: string
+          city?: string | null
           created_at?: string
           id?: string
           location?: string
@@ -150,6 +156,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string
+          id: string
+          message: string
+          priority: string
+          read: boolean
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          priority?: string
+          read?: boolean
+          title: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          priority?: string
+          read?: boolean
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       payment_methods: {
         Row: {

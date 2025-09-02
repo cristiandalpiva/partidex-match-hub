@@ -132,7 +132,7 @@ export const MyTeamsModal = ({ isOpen, onClose, userId }: MyTeamsModalProps) => 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="glass max-w-4xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+      <DialogContent className="glass-strong max-w-4xl max-h-[80vh] overflow-y-auto bg-background" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {selectedTeam && (

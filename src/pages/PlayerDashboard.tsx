@@ -188,8 +188,12 @@ const PlayerDashboard = () => {
         <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-gold-premium to-gold-premium-light rounded-xl flex items-center justify-center">
-                <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-black-deep" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/b26b6299-0c47-4446-8a52-82d18d2167f3.png" 
+                  alt="Partidex Logo" 
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl"
+                />
               </div>
               <div>
                 <h1 className="text-lg sm:text-xl font-bold text-foreground">Partidex</h1>

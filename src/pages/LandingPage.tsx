@@ -246,27 +246,107 @@ const LandingPage = () => {
 
       {/* Footer */}
       <footer className="glass border-t border-white/10 mt-16">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center gap-3 mb-4 md:mb-0">
-              <img 
-                src="/lovable-uploads/b26b6299-0c47-4446-8a52-82d18d2167f3.png" 
-                alt="Partidex Logo" 
-                className="w-8 h-8 rounded-lg"
-              />
-              <span className="text-lg font-bold text-gradient-gold">Partidex</span>
+        <div className="max-w-7xl mx-auto px-4 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <img 
+                  src="/lovable-uploads/b26b6299-0c47-4446-8a52-82d18d2167f3.png" 
+                  alt="Partidex Logo" 
+                  className="w-8 h-8 rounded-lg"
+                />
+                <span className="text-lg font-bold text-gradient-gold">Partidex</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                La plataforma definitiva para el fútbol amateur.
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground">
-              © 2024 Partidex. Todos los derechos reservados.
-            </p>
-            <GlassmorphismButton
-              variant="default"
-              size="sm"
-              icon={ArrowRight}
-              onClick={() => navigate('/login')}
-            >
-              Ingresar
-            </GlassmorphismButton>
+            
+            <div className="space-y-4">
+              <h4 className="font-semibold text-foreground">Plataforma</h4>
+              <div className="space-y-2">
+                <button 
+                  onClick={() => navigate('/about')}
+                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Acerca de
+                </button>
+                <button 
+                  onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Características
+                </button>
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Iniciar Sesión
+                </button>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-semibold text-foreground">Para Usuarios</h4>
+              <div className="space-y-2">
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Dashboard Jugador
+                </button>
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Dashboard Admin
+                </button>
+                <span className="block text-sm text-muted-foreground">
+                  Soporte 24/7
+                </span>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-semibold text-foreground">Contacto</h4>
+              <div className="space-y-2">
+                <span className="block text-sm text-muted-foreground">
+                  info@partidex.com
+                </span>
+                <span className="block text-sm text-muted-foreground">
+                  +54 11 1234-5678
+                </span>
+                <GlassmorphismButton
+                  variant="gold"
+                  size="sm"
+                  onClick={() => navigate('/login')}
+                >
+                  Comenzar
+                </GlassmorphismButton>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-white/10 pt-8">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <p className="text-sm text-muted-foreground mb-4 md:mb-0">
+                © 2025 Partidex. Todos los derechos reservados.
+              </p>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => navigate('/about')}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Términos de Servicio
+                </button>
+                <button 
+                  onClick={() => navigate('/about')}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Política de Privacidad
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

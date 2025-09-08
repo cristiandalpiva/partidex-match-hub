@@ -37,7 +37,7 @@ export const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
 
         {/* Footer */}
         <div className="text-center mt-6 text-xs text-muted-foreground">
-          <p>© 2024 Partidex. Todos los derechos reservados.</p>
+          <p>© 2025 Partidex. Todos los derechos reservados.</p>
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import PlayerDashboard from "./pages/PlayerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import LandingPage from "./pages/LandingPage";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/player/dashboard" element={<PlayerDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

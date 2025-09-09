@@ -105,9 +105,9 @@ const LandingPage = () => {
             </div>
             
             <div className="flex items-center gap-4">
-              <span className="hidden md:flex items-center gap-2 text-sm font-semibold text-gradient-gold bg-gold-premium/10 px-3 py-1 rounded-full border border-gold-premium/20">
+              <span className="hidden md:flex items-center gap-2 text-sm font-bold text-gradient-gold bg-gold-premium/10 px-3 py-1 rounded-full border border-gold-premium/20">
                 Promociona tu cancha
-                <span className="text-xs text-muted-foreground bg-background/50 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-black font-bold bg-background/50 px-2 py-0.5 rounded-full">
                   Muy pronto
                 </span>
               </span>

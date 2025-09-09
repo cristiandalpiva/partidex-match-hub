@@ -104,13 +104,37 @@ const LandingPage = () => {
               </div>
             </div>
             
-            <GlassmorphismButton
-              variant="gold"
-              size="md"
-              onClick={() => navigate('/login')}
-            >
-              Ingresar
-            </GlassmorphismButton>
+            {/* Header Hero Image */}
+            <div className="hidden lg:block absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <img 
+                src="/lovable-uploads/d7b8b0a1-09a1-4906-9109-2926f449841c.png" 
+                alt="Jugadores celebrando" 
+                className="w-32 h-20 object-cover rounded-lg opacity-30"
+              />
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => navigate('/about')}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Acerca de
+              </button>
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
+                onClick={() => navigate('/login')}
+              >
+                Iniciar Sesión
+              </GlassmorphismButton>
+              <GlassmorphismButton
+                variant="gold"
+                size="sm"
+                onClick={() => navigate('/login')}
+              >
+                Registrarse
+              </GlassmorphismButton>
+            </div>
           </div>
         </div>
       </header>

@@ -109,7 +109,13 @@ const LandingPage = () => {
               </span>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
+              <span className="hidden md:flex items-center gap-2 text-sm font-semibold text-gradient-gold bg-gold-premium/10 px-3 py-1 rounded-full border border-gold-premium/20">
+                Promociona tu cancha
+                <span className="text-xs text-muted-foreground bg-background/50 px-2 py-0.5 rounded-full">
+                  Muy pronto
+                </span>
+              </span>
               <GlassmorphismButton
                 variant="default"
                 size="sm"
@@ -153,7 +159,7 @@ const LandingPage = () => {
               <img 
                 src="/lovable-uploads/d7b8b0a1-09a1-4906-9109-2926f449841c.png" 
                 alt="Jugadores celebrando en el campo" 
-                className="w-full max-w-2xl h-64 object-cover rounded-2xl shadow-lg hover-scale"
+                className="w-full max-w-2xl h-64 object-cover object-top rounded-2xl shadow-lg hover-scale"
               />
             </div>
           </div>

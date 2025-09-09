@@ -90,23 +90,18 @@ const LandingPage = () => {
       <header className="glass border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-                  <img 
-                    src="/lovable-uploads/b26b6299-0c47-4446-8a52-82d18d2167f3.png" 
-                    alt="Partidex Logo" 
-                    className="w-12 h-12 rounded-xl"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-gradient-gold">Partidex</h1>
-                  <p className="text-sm text-muted-foreground">Tu mejor fichaje</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/b26b6299-0c47-4446-8a52-82d18d2167f3.png" 
+                  alt="Partidex Logo" 
+                  className="w-12 h-12 rounded-xl"
+                />
               </div>
-              <span className="hidden md:block text-sm font-semibold text-gradient-gold bg-gold-premium/10 px-3 py-1 rounded-full border border-gold-premium/20">
-                Promociona tu cancha
-              </span>
+              <div>
+                <h1 className="text-2xl font-bold text-gradient-gold">Partidex</h1>
+                <p className="text-sm text-muted-foreground">Tu mejor fichaje</p>
+              </div>
             </div>
             
             <div className="flex items-center gap-4">

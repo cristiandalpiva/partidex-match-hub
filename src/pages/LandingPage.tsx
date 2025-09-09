@@ -159,7 +159,7 @@ const LandingPage = () => {
               <img 
                 src="/lovable-uploads/d7b8b0a1-09a1-4906-9109-2926f449841c.png" 
                 alt="Jugadores celebrando en el campo" 
-                className="w-full max-w-2xl h-64 object-cover object-top rounded-2xl shadow-lg hover-scale"
+                className="w-full max-w-2xl h-[364px] object-cover object-center rounded-2xl shadow-lg hover-scale"
               />
             </div>
           </div>

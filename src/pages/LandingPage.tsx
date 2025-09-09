@@ -90,36 +90,33 @@ const LandingPage = () => {
       <header className="glass border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-                <img 
-                  src="/lovable-uploads/b26b6299-0c47-4446-8a52-82d18d2167f3.png" 
-                  alt="Partidex Logo" 
-                  className="w-12 h-12 rounded-xl"
-                />
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <img 
+                    src="/lovable-uploads/b26b6299-0c47-4446-8a52-82d18d2167f3.png" 
+                    alt="Partidex Logo" 
+                    className="w-12 h-12 rounded-xl"
+                  />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gradient-gold">Partidex</h1>
+                  <p className="text-sm text-muted-foreground">Tu mejor fichaje</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gradient-gold">Partidex</h1>
-                <p className="text-sm text-muted-foreground">Tu mejor fichaje</p>
-              </div>
-            </div>
-            
-            {/* Header Hero Image */}
-            <div className="hidden lg:block absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <img 
-                src="/lovable-uploads/d7b8b0a1-09a1-4906-9109-2926f449841c.png" 
-                alt="Jugadores celebrando" 
-                className="w-32 h-20 object-cover rounded-lg opacity-30"
-              />
+              <span className="hidden md:block text-sm font-semibold text-gradient-gold bg-gold-premium/10 px-3 py-1 rounded-full border border-gold-premium/20">
+                Promociona tu cancha
+              </span>
             </div>
             
             <div className="flex items-center gap-3">
-              <button 
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
                 onClick={() => navigate('/about')}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Acerca de
-              </button>
+              </GlassmorphismButton>
               <GlassmorphismButton
                 variant="default"
                 size="sm"
@@ -150,6 +147,15 @@ const LandingPage = () => {
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Organiza partidos, gestiona equipos, administra canchas y conecta con la comunidad futbolística. Todo en una sola plataforma.
             </p>
+            
+            {/* Hero Image */}
+            <div className="flex justify-center py-6">
+              <img 
+                src="/lovable-uploads/d7b8b0a1-09a1-4906-9109-2926f449841c.png" 
+                alt="Jugadores celebrando en el campo" 
+                className="w-full max-w-2xl h-64 object-cover rounded-2xl shadow-lg hover-scale"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

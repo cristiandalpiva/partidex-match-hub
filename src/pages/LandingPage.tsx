@@ -227,6 +227,15 @@ const LandingPage = () => {
           <p className="text-lg text-muted-foreground">La mejor experiencia para la comunidad futbolística</p>
         </div>
 
+        {/* Team Photo */}
+        <div className="flex justify-center py-8">
+          <img 
+            src="/lovable-uploads/f721baff-e533-454b-b153-4da10922e4d6.png" 
+            alt="Equipo de fútbol celebrando juntos en el campo" 
+            className="w-full max-w-4xl h-[400px] object-cover object-center rounded-2xl shadow-xl hover-scale"
+          />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
             <div key={index} className="text-center slide-up" style={{animationDelay: `${index * 0.2}s`}}>
@@ -237,15 +246,6 @@ const LandingPage = () => {
               <p className="text-muted-foreground">{benefit.description}</p>
             </div>
           ))}
-        </div>
-
-        {/* Team Photo */}
-        <div className="flex justify-center py-8">
-          <img 
-            src="/lovable-uploads/f721baff-e533-454b-b153-4da10922e4d6.png" 
-            alt="Equipo de fútbol celebrando juntos en el campo" 
-            className="w-full max-w-4xl h-[400px] object-cover object-center rounded-2xl shadow-xl hover-scale"
-          />
         </div>
       </section>
 

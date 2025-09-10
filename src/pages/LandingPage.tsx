@@ -239,8 +239,8 @@ const LandingPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
             <div key={index} className="text-center slide-up" style={{animationDelay: `${index * 0.2}s`}}>
-              <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-electric-blue to-vibrant-orange flex items-center justify-center shadow-lg">
-                <benefit.icon className="w-10 h-10 text-white" />
+              <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-gold-premium to-gold-premium-light flex items-center justify-center shadow-lg">
+                <benefit.icon className="w-10 h-10 text-black-deep" />
               </div>
               <h4 className="text-xl font-semibold text-foreground mb-3">{benefit.title}</h4>
               <p className="text-muted-foreground">{benefit.description}</p>

@@ -9,6 +9,8 @@ import PlayerDashboard from "./pages/PlayerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import LandingPage from "./pages/LandingPage";
 import About from "./pages/About";
+import PlayerInfo from "./pages/PlayerInfo";
+import AdminInfo from "./pages/AdminInfo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<About />} />
+          <Route path="/player-info" element={<PlayerInfo />} />
+          <Route path="/admin-info" element={<AdminInfo />} />
           <Route path="/login" element={<Login />} />
           <Route path="/player/dashboard" element={<PlayerDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

@@ -321,13 +321,13 @@ const LandingPage = () => {
               <h4 className="font-semibold text-foreground">Para Usuarios</h4>
               <div className="space-y-2">
                 <button 
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/player-info')}
                   className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Dashboard Jugador
                 </button>
                 <button 
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/admin-info')}
                   className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Dashboard Admin

@@ -69,8 +69,8 @@ const LandingPage = () => {
   const benefits = [
     {
       icon: Star,
-      title: "Experiencia Premium",
-      description: "Interfaz moderna con efectos glassmorphism y animaciones fluidas"
+      title: "Pasos sencillos",
+      description: "Interfaz sencilla., En pocos pasos gestiona tus partidos."
     },
     {
       icon: CheckCircle,
@@ -237,6 +237,15 @@ const LandingPage = () => {
               <p className="text-muted-foreground">{benefit.description}</p>
             </div>
           ))}
+        </div>
+
+        {/* Team Photo */}
+        <div className="flex justify-center py-8">
+          <img 
+            src="/lovable-uploads/f721baff-e533-454b-b153-4da10922e4d6.png" 
+            alt="Equipo de fútbol celebrando juntos en el campo" 
+            className="w-full max-w-4xl h-[400px] object-cover object-center rounded-2xl shadow-xl hover-scale"
+          />
         </div>
       </section>
 

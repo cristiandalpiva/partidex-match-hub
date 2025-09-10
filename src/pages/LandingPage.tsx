@@ -185,7 +185,7 @@ const LandingPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {playerFeatures.map((feature, index) => (
-            <Card key={index} className="glass rounded-3xl border-white/20 hover-lift bounce-in" style={{animationDelay: `${index * 0.1}s`}}>
+            <Card key={index} className="glass rounded-3xl border-white/20 bounce-in" style={{animationDelay: `${index * 0.1}s`}}>
               <CardContent className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-green-dynamic to-green-dynamic-dark flex items-center justify-center">
                   <feature.icon className="w-8 h-8 text-white" />
@@ -207,7 +207,7 @@ const LandingPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {adminFeatures.map((feature, index) => (
-            <Card key={index} className="glass rounded-3xl border-white/20 hover-lift bounce-in" style={{animationDelay: `${index * 0.1}s`}}>
+            <Card key={index} className="glass rounded-3xl border-white/20 bounce-in" style={{animationDelay: `${index * 0.1}s`}}>
               <CardContent className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gold-premium to-gold-premium-light flex items-center justify-center">
                   <feature.icon className="w-8 h-8 text-black-deep" />
@@ -344,13 +344,6 @@ const LandingPage = () => {
                 <span className="block text-sm text-muted-foreground">
                   +54 11 1234-5678
                 </span>
-                <GlassmorphismButton
-                  variant="gold"
-                  size="sm"
-                  onClick={() => navigate('/login')}
-                >
-                  Comenzar
-                </GlassmorphismButton>
               </div>
             </div>
           </div>

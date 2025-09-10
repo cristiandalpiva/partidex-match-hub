@@ -305,12 +305,6 @@ const LandingPage = () => {
                 >
                   Características
                 </button>
-                <button 
-                  onClick={() => navigate('/login')}
-                  className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Iniciar Sesión
-                </button>
               </div>
             </div>
             
@@ -329,9 +323,6 @@ const LandingPage = () => {
                 >
                   Dashboard Admin
                 </button>
-                <span className="block text-sm text-muted-foreground">
-                  Soporte 24/7
-                </span>
               </div>
             </div>
             

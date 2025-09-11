@@ -175,7 +175,7 @@ const About = () => {
         <Card className="glass rounded-3xl border-white/20">
           <CardContent className="p-12">
             <div className="max-w-4xl mx-auto text-center">
-              <h3 className="text-3xl font-bold text-foreground mb-6">Nuestra Historia</h3>
+              <h3 className="text-3xl font-bold text-foreground mb-6">Nuestra historia</h3>
               <div className="space-y-6 text-lg text-muted-foreground">
                 <p>
                   Partidex nació de la frustración de organizar partidos de fútbol. Como jugadores, entendimos lo difícil que era coordinar horarios, encontrar canchas disponibles y gestionar los pagos de manera eficiente.

@@ -178,13 +178,13 @@ const About = () => {
               <h3 className="text-3xl font-bold text-foreground mb-6">Nuestra historia</h3>
               <div className="space-y-6 text-lg text-muted-foreground">
                 <p>
-                  Partidex nació de la frustración de organizar partidos de fútbol. Como jugadores, entendimos lo difícil que era coordinar horarios, encontrar canchas disponibles y gestionar los pagos de manera eficiente.
+                  Partidex nació de la frustración de organizar partidos de fútbol. Como jugadores, jugadoras y administradores, entendimos lo difícil que era coordinar horarios, encontrar canchas disponibles y gestionar los pagos de manera eficiente.
                 </p>
                 <p>
                   En 2025, decidimos crear la solución que nosotros hubiéramos querido tener: una plataforma integral que simplificara cada aspecto de la experiencia futbolística, desde la formación de equipos hasta la reserva de canchas.
                 </p>
                 <p>
-                  Hoy, Partidex es utilizada por miles de jugadores y administradores que han encontrado en nuestra plataforma la herramienta perfecta para hacer del fútbol una experiencia más organizada, social y divertida.
+                  Únete a Partidex y sé parte de la historia. Juntos, haremos del fútbol una experiencia más organizada y social, creando historias memorables en cada partido.
                 </p>
               </div>
             </div>

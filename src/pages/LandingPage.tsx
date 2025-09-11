@@ -135,14 +135,14 @@ const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16 text-center">
+      <section className="max-w-7xl mx-auto px-4 py-12 text-center">
         <div className="space-y-8 fade-in">
           <div className="space-y-4">
-            <h2 className="text-4xl md:text-6xl font-bold text-foreground">
+            <h2 className="text-5xl md:text-7xl font-bold text-foreground">
               La plataforma definitiva para el 
               <span className="text-gradient-gold"> fútbol</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-2xl text-muted-foreground max-w-3xl mx-auto">
               Organiza partidos, gestiona equipos, administra canchas y conecta con la comunidad futbolística. Todo en una sola plataforma.
             </p>
             
@@ -177,10 +177,10 @@ const LandingPage = () => {
       </section>
 
       {/* Player Features */}
-      <section id="features" className="max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-foreground mb-4">Para Jugadores</h3>
-          <p className="text-lg text-muted-foreground">Herramientas diseñadas para mejorar tu experiencia futbolística</p>
+      <section id="features" className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h3 className="text-4xl font-bold text-foreground mb-4">Para Jugadores</h3>
+          <p className="text-xl text-muted-foreground">Herramientas diseñadas para mejorar tu experiencia futbolística</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -190,8 +190,8 @@ const LandingPage = () => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-green-dynamic to-green-dynamic-dark flex items-center justify-center">
                   <feature.icon className="w-8 h-8 text-white" />
                 </div>
-                <h4 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h4>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
+                <h4 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h4>
+                <p className="text-base text-muted-foreground">{feature.description}</p>
               </CardContent>
             </Card>
           ))}
@@ -199,10 +199,10 @@ const LandingPage = () => {
       </section>
 
       {/* Admin Features */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-foreground mb-4">Para Administradores</h3>
-          <p className="text-lg text-muted-foreground">Gestiona tus canchas con herramientas profesionales</p>
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h3 className="text-4xl font-bold text-foreground mb-4">Para Administradores</h3>
+          <p className="text-xl text-muted-foreground">Gestiona tus canchas con herramientas profesionales</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -212,8 +212,8 @@ const LandingPage = () => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gold-premium to-gold-premium-light flex items-center justify-center">
                   <feature.icon className="w-8 h-8 text-black-deep" />
                 </div>
-                <h4 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h4>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
+                <h4 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h4>
+                <p className="text-base text-muted-foreground">{feature.description}</p>
               </CardContent>
             </Card>
           ))}
@@ -221,14 +221,14 @@ const LandingPage = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-foreground mb-4">¿Por qué Partidex?</h3>
-          <p className="text-lg text-muted-foreground">La mejor experiencia para la comunidad futbolística</p>
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h3 className="text-4xl font-bold text-foreground mb-4">¿Por qué Partidex?</h3>
+          <p className="text-xl text-muted-foreground">La mejor experiencia para la comunidad futbolística</p>
         </div>
 
         {/* Team Photo */}
-        <div className="flex justify-center py-8">
+        <div className="flex justify-center py-6">
           <img 
             src="/lovable-uploads/f721baff-e533-454b-b153-4da10922e4d6.png" 
             alt="Equipo de fútbol celebrando juntos en el campo" 
@@ -242,21 +242,21 @@ const LandingPage = () => {
               <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-gold-premium to-gold-premium-light flex items-center justify-center shadow-lg">
                 <benefit.icon className="w-10 h-10 text-black-deep" />
               </div>
-              <h4 className="text-xl font-semibold text-foreground mb-3">{benefit.title}</h4>
-              <p className="text-muted-foreground">{benefit.description}</p>
+              <h4 className="text-2xl font-semibold text-foreground mb-3">{benefit.title}</h4>
+              <p className="text-lg text-muted-foreground">{benefit.description}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <Card className="glass rounded-3xl border-white/20">
-          <CardContent className="p-12 text-center">
-            <h3 className="text-3xl font-bold text-foreground mb-4">
+          <CardContent className="p-10 text-center">
+            <h3 className="text-4xl font-bold text-foreground mb-4">
               ¿Listo para revolucionar tu fútbol?
             </h3>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Únete a la comunidad de jugadores y administradores que ya están disfrutando de la mejor experiencia futbolística.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -282,8 +282,8 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="glass border-t border-white/10 mt-16">
-        <div className="max-w-7xl mx-auto px-4 py-16">
+      <footer className="glass border-t border-white/10 mt-12">
+        <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-4">
               <div className="flex items-center gap-3">

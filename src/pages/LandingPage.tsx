@@ -105,9 +105,6 @@ const LandingPage = () => {
             </div>
             
             <div className="flex items-center gap-4">
-              <span className="hidden lg:flex items-center text-sm font-bold text-gradient-gold bg-gold-premium/10 px-4 py-2 rounded-full border border-gold-premium/20 h-9">
-                Promociona tu cancha
-              </span>
               <GlassmorphismButton
                 variant="default"
                 size="sm"
@@ -120,6 +117,7 @@ const LandingPage = () => {
                 variant="default"
                 size="sm"
                 onClick={() => navigate('/login')}
+                className="hidden lg:flex"
               >
                 Iniciar Sesión
               </GlassmorphismButton>
@@ -127,8 +125,17 @@ const LandingPage = () => {
                 variant="gold"
                 size="sm"
                 onClick={() => navigate('/login')}
+                className="hidden lg:flex"
               >
                 Registrarse
+              </GlassmorphismButton>
+              <GlassmorphismButton
+                variant="default"
+                size="sm"
+                onClick={() => navigate('/login')}
+                className="lg:hidden"
+              >
+                Ingresar
               </GlassmorphismButton>
             </div>
           </div>
@@ -282,6 +289,67 @@ const LandingPage = () => {
         </Card>
       </section>
 
+      {/* Promociona tu Cancha Section */}
+      <section className="max-w-7xl mx-auto px-4 py-10">
+        <div className="text-center mb-6">
+          <h3 className="text-6xl font-bold text-foreground mb-4">Promociona tu Cancha</h3>
+          <p className="text-2xl text-muted-foreground max-w-4xl mx-auto mb-8">
+            Convierte tu complejo deportivo en un imán para jugadores. Con nuestra nueva funcionalidad, podrás destacar tu cancha, aumentar tu visibilidad y llenar tus horarios de forma inteligente.
+          </p>
+          
+          {/* Promotional Image */}
+          <div className="flex justify-center py-4 mb-8">
+            <img 
+              src="/lovable-uploads/d3155ca5-c1e8-4935-a722-eabd24a2d842.png" 
+              alt="Complejo deportivo con canchas de fútbol y pádel al atardecer" 
+              className="w-full max-w-4xl h-[400px] object-cover object-center rounded-2xl shadow-xl hover-scale"
+            />
+          </div>
+        </div>
+
+        <div className="text-center mb-6">
+          <h4 className="text-4xl font-bold text-foreground mb-6">¿Cómo funciona?</h4>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="glass rounded-3xl border-white/20">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gold-premium to-gold-premium-light flex items-center justify-center">
+                <Star className="w-8 h-8 text-black-deep" />
+              </div>
+              <h5 className="text-xl font-semibold text-foreground mb-2">Visibilidad garantizada</h5>
+              <p className="text-base text-muted-foreground">Tu cancha aparecerá en un lugar destacado para los jugadores de tu zona.</p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass rounded-3xl border-white/20">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gold-premium to-gold-premium-light flex items-center justify-center">
+                <TrendingUp className="w-8 h-8 text-black-deep" />
+              </div>
+              <h5 className="text-xl font-semibold text-foreground mb-2">Aumenta tus reservas</h5>
+              <p className="text-base text-muted-foreground">Atrae a nuevos equipos y asegura que tu calendario esté siempre completo.</p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass rounded-3xl border-white/20">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gold-premium to-gold-premium-light flex items-center justify-center">
+                <Users className="w-8 h-8 text-black-deep" />
+              </div>
+              <h5 className="text-xl font-semibold text-foreground mb-2">Conecta con la comunidad</h5>
+              <p className="text-base text-muted-foreground">Únete a la red más grande de complejos deportivos y jugadores.</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-center mt-8">
+          <div className="inline-flex items-center text-2xl font-bold text-gradient-gold bg-gold-premium/10 px-6 py-3 rounded-full border border-gold-premium/20">
+            ¡Muy pronto disponible!
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="glass border-t border-white/10 mt-12">
         <div className="max-w-7xl mx-auto px-4 py-12">
@@ -315,9 +383,6 @@ const LandingPage = () => {
                 >
                   Características
                 </button>
-                <span className="inline-flex items-center text-sm font-bold text-gradient-gold bg-gold-premium/10 px-3 py-1 rounded-full border border-gold-premium/20">
-                  Promociona tu cancha
-                </span>
               </div>
             </div>
             

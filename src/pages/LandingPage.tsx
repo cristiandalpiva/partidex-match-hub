@@ -105,13 +105,14 @@ const LandingPage = () => {
             </div>
             
             <div className="flex items-center gap-4">
-              <span className="hidden md:flex items-center text-sm font-bold text-gradient-gold bg-gold-premium/10 px-4 py-2 rounded-full border border-gold-premium/20 h-9">
+              <span className="hidden lg:flex items-center text-sm font-bold text-gradient-gold bg-gold-premium/10 px-4 py-2 rounded-full border border-gold-premium/20 h-9">
                 Promociona tu cancha
               </span>
               <GlassmorphismButton
                 variant="default"
                 size="sm"
                 onClick={() => navigate('/about')}
+                className="hidden lg:flex"
               >
                 Acerca de
               </GlassmorphismButton>
@@ -314,6 +315,9 @@ const LandingPage = () => {
                 >
                   Características
                 </button>
+                <span className="inline-flex items-center text-sm font-bold text-gradient-gold bg-gold-premium/10 px-3 py-1 rounded-full border border-gold-premium/20">
+                  Promociona tu cancha
+                </span>
               </div>
             </div>
             

@@ -23,7 +23,7 @@ export const GlassmorphismButton = ({
   className = '',
   type = 'button'
 }: GlassmorphismButtonProps) => {
-  const baseClasses = 'glass rounded-2xl font-semibold transition-all duration-300 hover-lift tap-scale flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'glass rounded-2xl font-semibold transition-all duration-300 hover-lift tap-scale flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mx-auto';
   
   const variantClasses = {
     gold: 'bg-gradient-to-r from-gold-premium to-gold-premium-light text-black-deep shadow-gold hover:shadow-xl',

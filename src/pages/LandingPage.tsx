@@ -170,7 +170,7 @@ const LandingPage = () => {
               size="lg"
               icon={PlayCircle}
               onClick={() => navigate('/login')}
-              className="w-48"
+              className="w-full sm:w-48"
             >
               Comenzar Ahora
             </GlassmorphismButton>
@@ -178,7 +178,7 @@ const LandingPage = () => {
               variant="default"
               size="lg"
               onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              className="w-48"
+              className="w-full sm:w-48"
             >
               Conocer Más
             </GlassmorphismButton>

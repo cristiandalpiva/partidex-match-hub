@@ -170,6 +170,7 @@ const LandingPage = () => {
               size="lg"
               icon={PlayCircle}
               onClick={() => navigate('/login')}
+              className="w-48"
             >
               Comenzar Ahora
             </GlassmorphismButton>
@@ -177,6 +178,7 @@ const LandingPage = () => {
               variant="default"
               size="lg"
               onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+              className="w-48"
             >
               Conocer Más
             </GlassmorphismButton>
@@ -273,6 +275,7 @@ const LandingPage = () => {
                 size="lg"
                 icon={Users}
                 onClick={() => navigate('/login')}
+                className="w-52"
               >
                 Soy Jugador
               </GlassmorphismButton>
@@ -281,6 +284,7 @@ const LandingPage = () => {
                 size="lg"
                 icon={MapPin}
                 onClick={() => navigate('/login')}
+                className="w-52"
               >
                 Administro Canchas
               </GlassmorphismButton>

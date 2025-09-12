@@ -78,7 +78,7 @@ const About = () => {
                   className="w-12 h-12 rounded-xl"
                 />
                 <div>
-                  <h1 className="text-2xl font-bold text-gradient-gold">Partidex</h1>
+                  <h1 className="text-[22px] md:text-2xl font-bold text-gradient-gold">Partidex</h1>
                   <p className="text-sm text-muted-foreground">Tu mejor fichaje</p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ const About = () => {
       <section className="max-w-7xl mx-auto px-4 py-16 text-center">
         <div className="space-y-8 fade-in">
           <div className="space-y-4">
-            <h2 className="text-4xl md:text-6xl font-bold text-foreground">
+            <h2 className="text-[34px] md:text-4xl lg:text-6xl font-bold text-foreground">
               Acerca de 
               <span className="text-gradient-gold"> Partidex</span>
             </h2>
@@ -117,7 +117,7 @@ const About = () => {
             <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-green-dynamic to-gold-premium flex items-center justify-center shadow-lg">
               <Trophy className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-3xl font-bold text-foreground mb-4">Nuestra Misión</h3>
+            <h3 className="text-[28px] md:text-3xl font-bold text-foreground mb-4">Nuestra Misión</h3>
             <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
               Revolucionar la forma en que se organizan los partidos de fútbol, creando una plataforma que conecte a jugadores, equipos y administradores de canchas en un ecosistema digital integral. Queremos que cada partido sea una experiencia memorable, desde la organización hasta el último silbato.
             </p>
@@ -128,7 +128,7 @@ const About = () => {
       {/* Values Section */}
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-foreground mb-4">Nuestros Valores</h3>
+          <h3 className="text-[28px] md:text-3xl font-bold text-foreground mb-4">Nuestros Valores</h3>
           <p className="text-lg text-muted-foreground">Los principios que guían cada decisión en Partidex</p>
         </div>
 
@@ -150,7 +150,7 @@ const About = () => {
       {/* Team Section */}
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-foreground mb-4">Nuestro Equipo</h3>
+          <h3 className="text-[28px] md:text-3xl font-bold text-foreground mb-4">Nuestro Equipo</h3>
           <p className="text-lg text-muted-foreground">Profesionales dedicados a hacer de Partidex la mejor plataforma</p>
         </div>
 
@@ -175,7 +175,7 @@ const About = () => {
         <Card className="glass rounded-3xl border-white/20">
           <CardContent className="p-12">
             <div className="max-w-4xl mx-auto text-center">
-              <h3 className="text-3xl font-bold text-foreground mb-6">Nuestra historia</h3>
+              <h3 className="text-[28px] md:text-3xl font-bold text-foreground mb-6">Nuestra historia</h3>
               <div className="space-y-6 text-lg text-muted-foreground">
                 <p>
                   Partidex nació de la frustración de organizar partidos de fútbol. Como jugadores, jugadoras y administradores, entendimos lo difícil que era coordinar horarios, encontrar canchas disponibles y gestionar los pagos de manera eficiente.
@@ -196,7 +196,7 @@ const About = () => {
       <section className="max-w-7xl mx-auto px-4 py-16">
         <Card className="glass rounded-3xl border-white/20">
           <CardContent className="p-12 text-center">
-            <h3 className="text-3xl font-bold text-foreground mb-4">
+            <h3 className="text-[28px] md:text-3xl font-bold text-foreground mb-4">
               ¿Listo para unirte a Partidex?
             </h3>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">

@@ -99,7 +99,7 @@ const LandingPage = () => {
                 />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gradient-gold">Partidex</h1>
+                <h1 className="text-[22px] md:text-2xl font-bold text-gradient-gold">Partidex</h1>
                 <p className="text-sm text-muted-foreground">Tu mejor fichaje</p>
               </div>
             </div>
@@ -146,7 +146,7 @@ const LandingPage = () => {
       <section className="max-w-7xl mx-auto px-4 py-12 text-center">
         <div className="space-y-8 fade-in">
           <div className="space-y-4">
-            <h2 className="text-5xl md:text-7xl font-bold text-foreground">
+            <h2 className="text-[46px] md:text-5xl lg:text-7xl font-bold text-foreground">
               La plataforma definitiva para el 
               <span className="text-gradient-gold"> fútbol</span>
             </h2>
@@ -187,7 +187,7 @@ const LandingPage = () => {
       {/* Player Features */}
       <section id="features" className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
-          <h3 className="text-4xl font-bold text-foreground mb-4">Para Jugadores</h3>
+          <h3 className="text-[34px] md:text-4xl font-bold text-foreground mb-4">Para Jugadores</h3>
           <p className="text-xl text-muted-foreground">Herramientas diseñadas para mejorar tu experiencia futbolística</p>
         </div>
 
@@ -209,7 +209,7 @@ const LandingPage = () => {
       {/* Admin Features */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
-          <h3 className="text-4xl font-bold text-foreground mb-4">Para Administradores</h3>
+          <h3 className="text-[34px] md:text-4xl font-bold text-foreground mb-4">Para Administradores</h3>
           <p className="text-xl text-muted-foreground">Gestiona tus canchas con herramientas profesionales</p>
         </div>
 
@@ -231,7 +231,7 @@ const LandingPage = () => {
       {/* Benefits Section */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
-          <h3 className="text-4xl font-bold text-foreground mb-4">¿Por qué Partidex?</h3>
+          <h3 className="text-[34px] md:text-4xl font-bold text-foreground mb-4">¿Por qué Partidex?</h3>
           <p className="text-xl text-muted-foreground">La mejor experiencia para la comunidad futbolística</p>
         </div>
 
@@ -261,7 +261,7 @@ const LandingPage = () => {
       <section className="max-w-7xl mx-auto px-4 py-12">
         <Card className="glass rounded-3xl border-white/20">
           <CardContent className="p-10 text-center">
-            <h3 className="text-4xl font-bold text-foreground mb-4">
+            <h3 className="text-[34px] md:text-4xl font-bold text-foreground mb-4">
               ¿Listo para revolucionar tu fútbol?
             </h3>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -292,7 +292,7 @@ const LandingPage = () => {
       {/* Promociona tu Cancha Section */}
       <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="text-center mb-6">
-          <h3 className="text-6xl font-bold text-foreground mb-4">Promociona tu Cancha</h3>
+          <h3 className="text-[58px] md:text-6xl font-bold text-foreground mb-4">Promociona tu Cancha</h3>
           <p className="text-2xl text-muted-foreground max-w-4xl mx-auto mb-8">
             Convierte tu complejo deportivo en un imán para jugadores. Con nuestra nueva funcionalidad, podrás destacar tu cancha, aumentar tu visibilidad y llenar tus horarios de forma inteligente.
           </p>
@@ -308,7 +308,7 @@ const LandingPage = () => {
         </div>
 
         <div className="text-center mb-6">
-          <h4 className="text-4xl font-bold text-foreground mb-6">¿Cómo funciona?</h4>
+          <h4 className="text-[34px] md:text-4xl font-bold text-foreground mb-6">¿Cómo funciona?</h4>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

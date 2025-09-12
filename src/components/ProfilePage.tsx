@@ -239,7 +239,7 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
           {/* Profile Header */}
           <div className="glass rounded-3xl p-6">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full px-4 md:px-0">
                 <Avatar className="w-20 h-20">
                   <AvatarImage src={formData.avatar_url} />
                   <AvatarFallback className="bg-gradient-to-br from-gold-premium to-gold-premium-light text-black-deep text-xl font-bold">

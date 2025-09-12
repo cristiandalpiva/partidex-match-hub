@@ -228,13 +228,6 @@ const About = () => {
             <p className="text-sm text-muted-foreground">
               © 2025 Partidex. Todos los derechos reservados.
             </p>
-            <GlassmorphismButton
-              variant="default"
-              size="sm"
-              onClick={() => navigate('/')}
-            >
-              Inicio
-            </GlassmorphismButton>
           </div>
         </div>
       </footer>

@@ -249,7 +249,7 @@ export const ProfilePage = ({ userId, onBack }: ProfilePageProps) => {
                 
                 <div className="space-y-2">
                   {editMode ? (
-                    <div className="space-y-2">
+                     <div className="space-y-2 w-full flex flex-col items-center justify-center px-4 md:px-6">
                       <Input
                         value={formData.name}
                         onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}

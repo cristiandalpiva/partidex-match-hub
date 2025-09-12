@@ -13,6 +13,7 @@ import { MyTeamsModal } from '@/components/modals/MyTeamsModal';
 import { OnboardingFlow } from '@/components/OnboardingFlow';
 import { NotificationPanel } from '@/components/NotificationPanel';
 import { ProfilePage } from '@/components/ProfilePage';
+import FieldSearch from '@/components/FieldSearch';
 import { supabase } from '@/integrations/supabase/client';
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 import { useNavigate } from 'react-router-dom';
@@ -568,6 +569,9 @@ const PlayerDashboard = () => {
                 />
               )}
             </div>
+
+            {/* Field Search */}
+            <FieldSearch />
 
             {/* Advertising Banner */}
             <div className="mt-8">

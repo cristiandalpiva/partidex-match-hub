@@ -24,8 +24,8 @@ const FieldSearch = () => {
   const [fields, setFields] = useState<Field[]>([]);
   const [filteredFields, setFilteredFields] = useState<Field[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cityFilter, setCityFilter] = useState<string>('');
-  const [priceSort, setPriceSort] = useState<string>('');
+  const [cityFilter, setCityFilter] = useState<string>('all');
+  const [priceSort, setPriceSort] = useState<string>('none');
   const [cities, setCities] = useState<string[]>([]);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const FieldSearch = () => {
     }
 
     // Filter by city
-    if (cityFilter) {
+    if (cityFilter && cityFilter !== 'all') {
       filtered = filtered.filter(field => field.city === cityFilter);
     }
 
@@ -93,8 +93,8 @@ const FieldSearch = () => {
 
   const clearFilters = () => {
     setSearchTerm('');
-    setCityFilter('');
-    setPriceSort('');
+    setCityFilter('all');
+    setPriceSort('none');
   };
 
   const formatPrice = (price: number) => {
@@ -129,7 +129,7 @@ const FieldSearch = () => {
                 <SelectValue placeholder="Ciudad" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas</SelectItem>
+                <SelectItem value="all">Todas</SelectItem>
                 {cities.map(city => (
                   <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}
@@ -141,7 +141,7 @@ const FieldSearch = () => {
                 <SelectValue placeholder="Precio" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Sin orden</SelectItem>
+                <SelectItem value="none">Sin orden</SelectItem>
                 <SelectItem value="asc">Menor precio</SelectItem>
                 <SelectItem value="desc">Mayor precio</SelectItem>
               </SelectContent>

@@ -261,15 +261,15 @@ const PlayerDashboard = () => {
                     >
                       Gestionar Pagos
                     </GlassmorphismButton>
-                    <GlassmorphismButton
-                      variant="default"
-                      size="sm"
-                      icon={LogOut}
-                      className="w-full justify-start"
-                      onClick={() => { handleLogout(); setMenuOpen(false); }}
-                    >
-                      Salir
-                    </GlassmorphismButton>
+                     <GlassmorphismButton
+                       variant="default"
+                       size="sm"
+                       icon={LogOut}
+                       className="w-full justify-start sm:hidden"
+                       onClick={() => { handleLogout(); setMenuOpen(false); }}
+                     >
+                       Salir
+                     </GlassmorphismButton>
                   </div>
                 </SheetContent>
               </Sheet>
@@ -280,7 +280,7 @@ const PlayerDashboard = () => {
                 size="sm"
                 icon={Bell}
                 onClick={() => setShowNotifications(true)}
-                className="hidden md:flex"
+                className="hidden lg:flex"
               >
                 Notificaciones
               </GlassmorphismButton>
@@ -300,7 +300,7 @@ const PlayerDashboard = () => {
                 size="sm"
                 icon={Plus}
                 onClick={handleCreateMatch}
-                className="hidden sm:flex"
+                className="hidden lg:flex"
               >
                 Crear Partido
               </GlassmorphismButton>
@@ -310,7 +310,7 @@ const PlayerDashboard = () => {
                 size="sm"
                 icon={Users}
                 onClick={handleCreateTeam}
-                className="hidden sm:flex"
+                className="hidden lg:flex"
               >
                 Crear Equipo
               </GlassmorphismButton>
@@ -320,8 +320,9 @@ const PlayerDashboard = () => {
                 size="sm"
                 icon={LogOut}
                 onClick={handleLogout}
+                className="hidden sm:flex"
               >
-                <span className="hidden sm:inline">Salir</span>
+                Salir
               </GlassmorphismButton>
             </div>
           </div>

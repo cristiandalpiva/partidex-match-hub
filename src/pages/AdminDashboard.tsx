@@ -1,10 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut, CreditCard, Menu } from 'lucide-react';
+import { Calendar, MapPin, DollarSign, Users, TrendingUp, Clock, LogOut, CreditCard, Menu, Edit } from 'lucide-react';
 import { GlassmorphismButton } from '@/components/ui/glassmorphism-button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AdBanner } from '@/components/AdBanner';
 import { AddFieldModal } from '@/components/modals/AddFieldModal';
+import { EditFieldModal } from '@/components/modals/EditFieldModal';
 import { PaymentModal } from '@/components/modals/PaymentModal';
 import { AdminPaymentConfigModal } from '@/components/modals/AdminPaymentConfigModal';
 import { AdminCalendar } from '@/components/AdminCalendar';
@@ -23,6 +24,8 @@ const AdminDashboard = () => {
   const [fields, setFields] = useState([]);
   const [matches, setMatches] = useState([]);
   const [showAddField, setShowAddField] = useState(false);
+  const [showEditField, setShowEditField] = useState(false);
+  const [editingField, setEditingField] = useState<any>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedField, setSelectedField] = useState<string | null>(null);
@@ -155,6 +158,15 @@ const AdminDashboard = () => {
   };
 
   const handleFieldAdded = () => {
+    loadAdminFields(user.id);
+  };
+
+  const handleEditField = (field: any) => {
+    setEditingField(field);
+    setShowEditField(true);
+  };
+
+  const handleFieldUpdated = () => {
     loadAdminFields(user.id);
   };
 
@@ -453,16 +465,26 @@ const AdminDashboard = () => {
                           <h3 className="font-semibold text-foreground text-lg">{field.name}</h3>
                           <p className="text-sm text-muted-foreground">{field.location}</p>
                         </div>
-                        <GlassmorphismButton
-                          variant="default"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedField(field.id);
-                            setActiveTab('calendar');
-                          }}
-                        >
-                          Ver Agenda
-                        </GlassmorphismButton>
+                        <div className="flex gap-2">
+                          <GlassmorphismButton
+                            variant="default"
+                            size="sm"
+                            icon={Edit}
+                            onClick={() => handleEditField(field)}
+                          >
+                            Editar
+                          </GlassmorphismButton>
+                          <GlassmorphismButton
+                            variant="default"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedField(field.id);
+                              setActiveTab('calendar');
+                            }}
+                          >
+                            Ver Agenda
+                          </GlassmorphismButton>
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-4">
@@ -550,7 +572,14 @@ const AdminDashboard = () => {
         onFieldAdded={handleFieldAdded}
         userId={user?.id}
       />
-      
+
+      <EditFieldModal
+        isOpen={showEditField}
+        onClose={() => setShowEditField(false)}
+        onFieldUpdated={handleFieldUpdated}
+        field={editingField}
+      />
+
       <PaymentModal
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}

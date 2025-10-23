@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,7 +14,14 @@ serve(async (req) => {
   }
 
   try {
-    const { payment_method_id, is_default } = await req.json();
+    // Validate input
+    const PaymentMethodSchema = z.object({
+      payment_method_id: z.string().min(1, 'Payment method ID is required').max(255, 'Payment method ID too long'),
+      is_default: z.boolean().optional(),
+    });
+
+    const requestBody = await req.json();
+    const { payment_method_id, is_default } = PaymentMethodSchema.parse(requestBody);
     
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -71,11 +79,25 @@ serve(async (req) => {
       }
     );
   } catch (error) {
+    console.error('Save payment method error:', error);
+    
+    // Return generic error message to client
+    let userMessage = 'An error occurred while saving the payment method. Please try again.';
+    let statusCode = 500;
+    
+    if (error.name === 'ZodError') {
+      userMessage = 'Invalid payment method information provided.';
+      statusCode = 400;
+    } else if (error.message?.includes('not authenticated')) {
+      userMessage = 'Authentication required.';
+      statusCode = 401;
+    }
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: userMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
+        status: statusCode,
       }
     );
   }

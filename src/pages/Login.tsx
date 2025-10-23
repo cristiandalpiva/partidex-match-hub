@@ -26,15 +26,11 @@ const Login = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
+        const { data: role } = await supabase.rpc('get_current_user_role');
         
-        if (profile?.role === 'player') {
+        if (role === 'player') {
           navigate('/player/dashboard');
-        } else if (profile?.role === 'admin') {
+        } else if (role === 'admin') {
           navigate('/admin/dashboard');
         }
       }
@@ -99,23 +95,19 @@ const Login = () => {
             description: "Iniciando sesión...",
           });
 
-          // Get user profile to check role
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('user_id', data.user.id)
-            .single();
+          // Get user role
+          const { data: role } = await supabase.rpc('get_current_user_role');
 
-          // Navigate based on role, with fallback for role mismatch
-          if (profile?.role === 'player') {
+          // Navigate based on role
+          if (role === 'player') {
             window.location.href = '/player/dashboard';
-          } else if (profile?.role === 'admin') {
+          } else if (role === 'admin') {
             window.location.href = '/admin/dashboard';
           } else {
-            // Handle case where profile role doesn't match selected role
+            // Handle case where role is not found
             toast({
-              title: "Rol incorrecto",
-              description: `Tu cuenta está registrada como ${profile?.role || 'desconocido'}. Selecciona el rol correcto.`,
+              title: "Error de rol",
+              description: 'No se pudo determinar el rol de tu cuenta. Por favor contacta al soporte.',
               variant: "destructive"
             });
             setLoading(false);

@@ -1,6 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -46,10 +47,22 @@ serve(async (req) => {
       throw new Error("Mercado Pago access token (MP_ACCESS_TOKEN) not configured");
     }
 
-    const body = (await req.json()) as CreatePreferencePayload;
-    if (!body || !Number.isFinite(body.amount) || body.amount <= 0) {
-      throw new Error("Invalid or missing 'amount'");
-    }
+    // Validate input
+    const PreferenceSchema = z.object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+      amount: z.number().positive('Amount must be positive'),
+      quantity: z.number().int().positive().optional(),
+      back_urls: z.object({
+        success: z.string().url().optional(),
+        failure: z.string().url().optional(),
+        pending: z.string().url().optional(),
+      }).optional(),
+      auto_return: z.enum(['approved', 'all']).optional(),
+      metadata: z.record(z.union([z.string(), z.number(), z.boolean()])).optional(),
+    });
+
+    const body = PreferenceSchema.parse(await req.json());
 
     const quantity = Math.max(1, Math.trunc(body.quantity ?? 1));
     const title = body.title ?? "Pago";
@@ -105,10 +118,26 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error: any) {
-    console.error("create-mercadopago-preference error:", error?.message || error);
+    console.error("create-mercadopago-preference error:", error);
+    
+    // Return generic error message to client
+    let userMessage = 'An error occurred while creating the payment preference. Please try again.';
+    let statusCode = 500;
+    
+    if (error.name === 'ZodError') {
+      userMessage = 'Invalid payment preference data provided.';
+      statusCode = 400;
+    } else if (error.message?.includes('not authenticated')) {
+      userMessage = 'Authentication required.';
+      statusCode = 401;
+    } else if (error.message?.includes('not configured')) {
+      userMessage = 'Payment service is not properly configured.';
+      statusCode = 503;
+    }
+    
     return new Response(
-      JSON.stringify({ error: error?.message ?? "Unknown error" }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      JSON.stringify({ error: userMessage }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: statusCode }
     );
   }
 });

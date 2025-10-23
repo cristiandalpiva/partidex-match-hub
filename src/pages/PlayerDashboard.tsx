@@ -62,7 +62,10 @@ const PlayerDashboard = () => {
         .eq('user_id', session.user.id)
         .single();
 
-      if (profileData?.role !== 'player') {
+      // Check user role
+      const { data: role } = await supabase.rpc('get_current_user_role');
+      
+      if (role !== 'player') {
         navigate('/admin/dashboard');
         return;
       }

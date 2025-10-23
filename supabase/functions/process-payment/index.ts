@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,7 +14,14 @@ serve(async (req) => {
   }
 
   try {
-    const { payment_id, payment_method_id } = await req.json();
+    // Validate input
+    const PaymentSchema = z.object({
+      payment_id: z.string().uuid('Invalid payment ID format'),
+      payment_method_id: z.string().min(1, 'Payment method ID is required').max(255, 'Payment method ID too long'),
+    });
+
+    const requestBody = await req.json();
+    const { payment_id, payment_method_id } = PaymentSchema.parse(requestBody);
     
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -85,11 +93,28 @@ serve(async (req) => {
       throw new Error(`Payment failed: ${paymentIntent.status}`);
     }
   } catch (error) {
+    console.error('Process payment error:', error);
+    
+    // Return generic error message to client
+    let userMessage = 'An error occurred while processing the payment. Please try again.';
+    let statusCode = 500;
+    
+    if (error.name === 'ZodError') {
+      userMessage = 'Invalid payment information provided.';
+      statusCode = 400;
+    } else if (error.message?.includes('not found')) {
+      userMessage = 'Payment not found.';
+      statusCode = 404;
+    } else if (error.message?.includes('already processed')) {
+      userMessage = 'This payment has already been processed.';
+      statusCode = 400;
+    }
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: userMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
+        status: statusCode,
       }
     );
   }

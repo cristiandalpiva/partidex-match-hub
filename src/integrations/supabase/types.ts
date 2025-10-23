@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -292,7 +292,6 @@ export type Database = {
           onboarding_data: Json | null
           phone: string | null
           preferred_position: string | null
-          role: string
           updated_at: string
           user_id: string
         }
@@ -308,7 +307,6 @@ export type Database = {
           onboarding_data?: Json | null
           phone?: string | null
           preferred_position?: string | null
-          role: string
           updated_at?: string
           user_id: string
         }
@@ -324,7 +322,6 @@ export type Database = {
           onboarding_data?: Json | null
           phone?: string | null
           preferred_position?: string | null
-          role?: string
           updated_at?: string
           user_id?: string
         }
@@ -413,18 +410,43 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      get_current_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
+      get_current_user_role: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "player" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -551,6 +573,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["player", "admin"],
+    },
   },
 } as const
